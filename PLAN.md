@@ -19,6 +19,88 @@
 
 ---
 
+<!-- /autoplan restore point: ~/.gstack/projects/sport-apk/master-autoplan-restore-20260411-220111.md -->
+
+<!-- AUTONOMOUS DECISION LOG -->
+## Decision Audit Trail
+
+| # | Phase | Decision | Classification | Principle | Rationale |
+|---|-------|----------|-----------------|-----------|-----------|
+| 1 | CEO | Mode: SELECTIVE EXPANSION | Mechanical | P6 | Default for autoplan |
+| 2 | CEO | Approach: Flutter Native | Mechanical | P5 | Matches documented environment |
+| 3 | CEO | Add calendar widget | Taste | P1/P2 | In blast radius, <1d effort |
+| 4 | CEO | Add session recovery UI | Mechanical | P1 | Missing critical state |
+| 5 | CEO | Add loading state | Mechanical | P1 | Missing UX state |
+| 6 | CEO | Bundle warmup videos only | Taste | P3 | APK size concern |
+| 7 | Eng | Use enum for WorkoutStatus | Mechanical | P5 | Type safety |
+| 8 | Eng | Add test section | Mechanical | P1 | 100% coverage goal |
+| 9 | Eng | Add video dispose constraint | Mechanical | P5 | Memory safety |
+
+---
+
+## Session Recovery Flow (added by autoplan)
+
+When user exits training mid-way or app crashes:
+
+### Exit Confirmation
+- Back button during exercise → show dialog: "退出训练？当前进度将保存"
+- Options: "继续训练" / "保存并退出"
+- On save: persist `WorkoutSession.pausedAt`, `currentExerciseIndex`, `status="paused"`
+
+### Crash Recovery
+- App restart with `status="paused"` → show: "上次训练未完成，是否继续？"
+- Options: "继续上次训练" / "开始新训练"
+- On continue: resume from `currentExerciseIndex + 1` (skip partial exercise)
+
+### Data Persistence
+```dart
+// Recovery state
+class WorkoutSession {
+  final String status; // completed | interrupted | paused
+  final DateTime? pausedAt;
+  final int currentExerciseIndex;
+  final int remainingSeconds; // timer state
+}
+```
+
+---
+
+## Loading States (added by autoplan)
+
+### Exercise Screen Loading
+- State: `loading → playing → paused → error`
+- Loading indicator: circular progress + "加载动作视频..."
+- Max load time: 3 seconds, then fallback to static image
+
+### Fallback Strategy
+```dart
+// Video fallback
+if (videoLoadTimeout > 3000ms) {
+  showStaticImage(exercise.imagePath);
+  speak(exercise.description); // TTS fallback
+}
+```
+
+---
+
+## Performance Constraints (added by autoplan)
+
+### Video Memory
+- Single `VideoPlayerController` per screen
+- `dispose()` on `dispose()` callback
+- No cached video controllers across screens
+
+### Audio Pre-loading
+- Load `beep.mp3`, `countdown.mp3`, `complete.mp3` at app init
+- Use `audioplayers.createPlayer()` for voice (not cache)
+
+### Timer
+- Single `Stopwatch` instance in `TimerService`
+- Not per-screen `Timer.periodic`
+- Use `Stream<int>` for countdown updates
+
+---
+
 ## 核心功能模块
 
 ### 模块一：跑前动态热身 (PreRunWarmup)
@@ -292,6 +374,45 @@ class Exercise {
   final String difficulty;            // 难度：beginner/intermediate/advanced
   final ExerciseCategory category;    // 分类
 }
+```
+
+---
+
+## 测试计划 (added by autoplan)
+
+### 单元测试
+
+| 文件 | 测试内容 | 覆盖率目标 |
+|------|----------|------------|
+| `lib/services/timer_service.dart` | start/pause/resume/reset | 100% |
+| `lib/services/audio_service.dart` | playBeep/playCountdown/speak/setVolume | 100% |
+| `lib/providers/workout_provider.dart` | startWorkout/nextExercise/completeWorkout | 100% |
+| `lib/providers/session_provider.dart` | pauseSession/resumeSession | 100% |
+
+### Widget 测试
+
+| Widget | 测试内容 |
+|--------|----------|
+| `countdown_timer.dart` | 渲染、倒计时更新、完成回调 |
+| `exercise_controls.dart` | 暂停/继续、上一个/下一个按钮 |
+| `progress_dots.dart` | 进度显示、当前索引高亮 |
+
+### Integration 测试 (E2E)
+
+| 流程 | 测试场景 |
+|------|----------|
+| 热身模块完整流程 | 开始 → 完成 → 统计页 |
+| 暂停恢复 | 训练中暂停 → 恢复 → 继续 |
+| 跳过动作 | 点击跳过 → 休息页 → 下一个动作 |
+| 中途退出 | 训练中退出 → 确认 → 保存状态 |
+
+### 测试命令
+
+```bash
+flutter test                           # 单元测试
+flutter test test/widgets/             # Widget 测试
+flutter test integration_test/         # E2E 测试
+flutter test --coverage                # 覆盖率报告
 ```
 
 ---
