@@ -1,0 +1,733 @@
+# Runner App Training Services Specification
+# Version: 1.0.0
+# Date: 2026-04-12
+# Source: PLAN.md + autoplan decisions
+
+metadata:
+  project: "runner_app"
+  module: "Core Services (Timer + Audio)"
+  status: "APPROVED"
+  approved_by: "delphi-review"
+  approved_date: "2026-04-11"
+
+# =============================================================================
+# Requirements
+# =============================================================================
+requirements:
+  # TimerService Requirements
+  REQ-TIMER-001:
+    id: "REQ-TIMER-001"
+    name: "Start Countdown Timer"
+    description: "User can start a countdown timer for exercise duration tracking"
+    priority: "CRITICAL"
+    source: "PLAN.md Line 240-244"
+    
+  REQ-TIMER-002:
+    id: "REQ-TIMER-002"
+    name: "Pause Timer"
+    description: "User can pause the timer during exercise"
+    priority: "CRITICAL"
+    source: "PLAN.md Line 218-222"
+    
+  REQ-TIMER-003:
+    id: "REQ-TIMER-003"
+    name: "Resume Timer"
+    description: "User can resume a paused timer"
+    priority: "CRITICAL"
+    source: "PLAN.md Line 218-222"
+    
+  REQ-TIMER-004:
+    id: "REQ-TIMER-004"
+    name: "Reset Timer"
+    description: "User can reset timer to initial duration"
+    priority: "HIGH"
+    source: "PLAN.md Line 387"
+    
+  REQ-TIMER-005:
+    id: "REQ-TIMER-005"
+    name: "Stream Countdown Updates"
+    description: "Timer emits countdown updates via Stream<int>"
+    priority: "CRITICAL"
+    source: "PLAN.md Line 99"
+    
+  REQ-TIMER-006:
+    id: "REQ-TIMER-006"
+    name: "Single Stopwatch Instance"
+    description: "TimerService uses single Stopwatch instance (not per-screen Timer.periodic)"
+    priority: "CRITICAL"
+    source: "PLAN.md Line 98"
+    
+  REQ-TIMER-007:
+    id: "REQ-TIMER-007"
+    name: "Complete Callback"
+    description: "Timer triggers callback when countdown reaches zero"
+    priority: "HIGH"
+    source: "PLAN.md Line 242-244"
+    
+  REQ-TIMER-008:
+    id: "REQ-TIMER-008"
+    name: "Get Remaining Seconds"
+    description: "Timer provides current remaining seconds value"
+    priority: "MEDIUM"
+    source: "PLAN.md Line 357"
+    
+  REQ-TIMER-009:
+    id: "REQ-TIMER-009"
+    name: "Get Current Status"
+    description: "Timer provides current status (idle/running/paused/completed)"
+    priority: "MEDIUM"
+    source: "PLAN.md Line 71"
+
+  # AudioService Requirements
+  REQ-AUDIO-001:
+    id: "REQ-AUDIO-001"
+    name: "Play Beep Sound"
+    description: "Play short beep sound for each second countdown"
+    priority: "HIGH"
+    source: "PLAN.md Line 241"
+    
+  REQ-AUDIO-002:
+    id: "REQ-AUDIO-002"
+    name: "Play Countdown Voice"
+    description: "Play voice countdown for last 5 seconds (5,4,3,2,1)"
+    priority: "HIGH"
+    source: "PLAN.md Line 242"
+    
+  REQ-AUDIO-003:
+    id: "REQ-AUDIO-003"
+    name: "Speak Text (TTS)"
+    description: "Convert text to speech for announcements"
+    priority: "HIGH"
+    source: "PLAN.md Line 240,243,244"
+    
+  REQ-AUDIO-004:
+    id: "REQ-AUDIO-004"
+    name: "Set Volume"
+    description: "Adjust audio volume (0-100)"
+    priority: "MEDIUM"
+    source: "PLAN.md Line 233"
+    
+  REQ-AUDIO-005:
+    id: "REQ-AUDIO-005"
+    name: "Preload Audio Files"
+    description: "Preload beep.mp3, countdown.mp3, complete.mp3 at app init"
+    priority: "HIGH"
+    source: "PLAN.md Line 94"
+    
+  REQ-AUDIO-006:
+    id: "REQ-AUDIO-006"
+    name: "Exercise Start Announcement"
+    description: "Speak '开始：{动作名称}' when exercise starts"
+    priority: "HIGH"
+    source: "PLAN.md Line 240"
+    
+  REQ-AUDIO-007:
+    id: "REQ-AUDIO-007"
+    name: "Exercise Complete Announcement"
+    description: "Speak '动作完成，休息5秒' when exercise ends"
+    priority: "HIGH"
+    source: "PLAN.md Line 243"
+    
+  REQ-AUDIO-008:
+    id: "REQ-AUDIO-008"
+    name: "Rest End Announcement"
+    description: "Speak '准备下一个动作' when rest ends"
+    priority: "HIGH"
+    source: "PLAN.md Line 244"
+    
+  REQ-AUDIO-009:
+    id: "REQ-AUDIO-009"
+    name: "Workout Complete Announcement"
+    description: "Speak '训练完成，真棒！' when workout completes"
+    priority: "HIGH"
+    source: "PLAN.md Line 244"
+    
+  REQ-AUDIO-010:
+    id: "REQ-AUDIO-010"
+    name: "Mute/Unmute Toggle"
+    description: "Toggle mute state (double-tap gesture)"
+    priority: "MEDIUM"
+    source: "PLAN.md Line 253"
+
+# =============================================================================
+# User Stories
+# =============================================================================
+user_stories:
+  US-TIMER-001:
+    id: "US-TIMER-001"
+    role: "runner"
+    action: "start countdown timer for exercise"
+    benefit: "track my exercise duration accurately"
+    requirements: ["REQ-TIMER-001", "REQ-TIMER-005", "REQ-TIMER-006"]
+    
+  US-TIMER-002:
+    id: "US-TIMER-002"
+    role: "runner"
+    action: "pause timer during exercise"
+    benefit: "take a break if needed without losing progress"
+    requirements: ["REQ-TIMER-002", "REQ-TIMER-008", "REQ-TIMER-009"]
+    
+  US-TIMER-003:
+    id: "US-TIMER-003"
+    role: "runner"
+    action: "resume paused timer"
+    benefit: "continue training from where I paused"
+    requirements: ["REQ-TIMER-003", "REQ-TIMER-008"]
+    
+  US-TIMER-004:
+    id: "US-TIMER-004"
+    role: "runner"
+    action: "get countdown updates"
+    benefit: "see real-time countdown on screen"
+    requirements: ["REQ-TIMER-005", "REQ-TIMER-008"]
+    
+  US-AUDIO-001:
+    id: "US-AUDIO-001"
+    role: "runner"
+    action: "hear beep sound each second"
+    benefit: "know time is progressing without looking at screen"
+    requirements: ["REQ-AUDIO-001", "REQ-AUDIO-004"]
+    
+  US-AUDIO-002:
+    id: "US-AUDIO-002"
+    role: "runner"
+    action: "hear voice countdown for last 5 seconds"
+    benefit: "know exactly when exercise will end"
+    requirements: ["REQ-AUDIO-002", "REQ-AUDIO-005"]
+    
+  US-AUDIO-003:
+    id: "US-AUDIO-003"
+    role: "runner"
+    action: "hear exercise announcements"
+    benefit: "know what's happening without reading text"
+    requirements: ["REQ-AUDIO-003", "REQ-AUDIO-006", "REQ-AUDIO-007", "REQ-AUDIO-008", "REQ-AUDIO-009"]
+
+# =============================================================================
+# Acceptance Criteria
+# =============================================================================
+acceptance_criteria:
+  # TimerService ACs
+  AC-TIMER-001-01:
+    id: "AC-TIMER-001-01"
+    requirement: "REQ-TIMER-001"
+    description: "start() sets timer to running status"
+    type: "STATE_CHANGE"
+    
+  AC-TIMER-001-02:
+    id: "AC-TIMER-001-02"
+    requirement: "REQ-TIMER-001"
+    description: "start() begins emitting countdown values via stream"
+    type: "OUTPUT"
+    
+  AC-TIMER-001-03:
+    id: "AC-TIMER-001-03"
+    requirement: "REQ-TIMER-001"
+    description: "start(duration) sets countdown from specified duration"
+    type: "INPUT"
+    
+  AC-TIMER-002-01:
+    id: "AC-TIMER-002-01"
+    requirement: "REQ-TIMER-002"
+    description: "pause() sets timer to paused status"
+    type: "STATE_CHANGE"
+    
+  AC-TIMER-002-02:
+    id: "AC-TIMER-002-02"
+    requirement: "REQ-TIMER-002"
+    description: "pause() stops emitting countdown values"
+    type: "OUTPUT"
+    
+  AC-TIMER-002-03:
+    id: "AC-TIMER-002-03"
+    requirement: "REQ-TIMER-002"
+    description: "pause() preserves remaining seconds"
+    type: "STATE_PRESERVE"
+    
+  AC-TIMER-003-01:
+    id: "AC-TIMER-003-01"
+    requirement: "REQ-TIMER-003"
+    description: "resume() sets timer back to running status"
+    type: "STATE_CHANGE"
+    
+  AC-TIMER-003-02:
+    id: "AC-TIMER-003-02"
+    requirement: "REQ-TIMER-003"
+    description: "resume() continues countdown from paused value"
+    type: "BEHAVIOR"
+    
+  AC-TIMER-003-03:
+    id: "AC-TIMER-003-03"
+    requirement: "REQ-TIMER-003"
+    description: "resume() resumes stream emission"
+    type: "OUTPUT"
+    
+  AC-TIMER-004-01:
+    id: "AC-TIMER-004-01"
+    requirement: "REQ-TIMER-004"
+    description: "reset() sets remaining seconds to initial duration"
+    type: "STATE_CHANGE"
+    
+  AC-TIMER-004-02:
+    id: "AC-TIMER-004-02"
+    requirement: "REQ-TIMER-004"
+    description: "reset() sets timer to idle status"
+    type: "STATE_CHANGE"
+    
+  AC-TIMER-005-01:
+    id: "AC-TIMER-005-01"
+    requirement: "REQ-TIMER-005"
+    description: "countdownStream emits int values every second"
+    type: "OUTPUT"
+    
+  AC-TIMER-005-02:
+    id: "AC-TIMER-005-02"
+    requirement: "REQ-TIMER-005"
+    description: "stream values decrease by 1 each emission"
+    type: "BEHAVIOR"
+    
+  AC-TIMER-005-03:
+    id: "AC-TIMER-005-03"
+    requirement: "REQ-TIMER-005"
+    description: "stream closes when countdown reaches 0"
+    type: "BEHAVIOR"
+    
+  AC-TIMER-006-01:
+    id: "AC-TIMER-006-01"
+    requirement: "REQ-TIMER-006"
+    description: "TimerService uses Stopwatch internally (not Timer.periodic)"
+    type: "IMPLEMENTATION"
+    
+  AC-TIMER-007-01:
+    id: "AC-TIMER-007-01"
+    requirement: "REQ-TIMER-007"
+    description: "onComplete callback triggered when countdown reaches 0"
+    type: "OUTPUT"
+    
+  AC-TIMER-008-01:
+    id: "AC-TIMER-008-01"
+    requirement: "REQ-TIMER-008"
+    description: "remainingSeconds getter returns current countdown value"
+    type: "OUTPUT"
+    
+  AC-TIMER-009-01:
+    id: "AC-TIMER-009-01"
+    requirement: "REQ-TIMER-009"
+    description: "status getter returns TimerStatus enum"
+    type: "OUTPUT"
+    
+  AC-TIMER-009-02:
+    id: "AC-TIMER-009-02"
+    requirement: "REQ-TIMER-009"
+    description: "TimerStatus values: idle, running, paused, completed"
+    type: "ENUM"
+
+  # AudioService ACs
+  AC-AUDIO-001-01:
+    id: "AC-AUDIO-001-01"
+    requirement: "REQ-AUDIO-001"
+    description: "playBeep() plays beep.mp3"
+    type: "OUTPUT"
+    
+  AC-AUDIO-001-02:
+    id: "AC-AUDIO-001-02"
+    requirement: "REQ-AUDIO-001"
+    description: "playBeep() is short (< 200ms)"
+    type: "CONSTRAINT"
+    
+  AC-AUDIO-002-01:
+    id: "AC-AUDIO-002-01"
+    requirement: "REQ-AUDIO-002"
+    description: "playCountdown(second) plays voice for specified second (1-5)"
+    type: "OUTPUT"
+    
+  AC-AUDIO-002-02:
+    id: "AC-AUDIO-002-02"
+    requirement: "REQ-AUDIO-002"
+    description: "playCountdown(5) plays '5.mp3'"
+    type: "BEHAVIOR"
+    
+  AC-AUDIO-003-01:
+    id: "AC-AUDIO-003-01"
+    requirement: "REQ-AUDIO-003"
+    description: "speak(text) converts text to speech via flutter_tts"
+    type: "OUTPUT"
+    
+  AC-AUDIO-003-02:
+    id: "AC-AUDIO-003-02"
+    requirement: "REQ-AUDIO-003"
+    description: "speak() uses default locale (zh_CN)"
+    type: "CONSTRAINT"
+    
+  AC-AUDIO-004-01:
+    id: "AC-AUDIO-004-01"
+    requirement: "REQ-AUDIO-004"
+    description: "setVolume(level) sets volume (0.0 - 1.0)"
+    type: "INPUT"
+    
+  AC-AUDIO-004-02:
+    id: "AC-AUDIO-004-02"
+    requirement: "REQ-AUDIO-004"
+    description: "setVolume affects all audio playback"
+    type: "BEHAVIOR"
+    
+  AC-AUDIO-005-01:
+    id: "AC-AUDIO-005-01"
+    requirement: "REQ-AUDIO-005"
+    description: "preload() called at app init"
+    type: "INITIALIZATION"
+    
+  AC-AUDIO-005-02:
+    id: "AC-AUDIO-005-02"
+    requirement: "REQ-AUDIO-005"
+    description: "preload() loads beep.mp3, countdown.mp3, complete.mp3"
+    type: "BEHAVIOR"
+    
+  AC-AUDIO-006-01:
+    id: "AC-AUDIO-006-01"
+    requirement: "REQ-AUDIO-006"
+    description: "announceExerciseStart(name) speaks '开始：{name}'"
+    type: "OUTPUT"
+    
+  AC-AUDIO-007-01:
+    id: "AC-AUDIO-007-01"
+    requirement: "REQ-AUDIO-007"
+    description: "announceExerciseComplete() speaks '动作完成，休息5秒'"
+    type: "OUTPUT"
+    
+  AC-AUDIO-008-01:
+    id: "AC-AUDIO-008-01"
+    requirement: "REQ-AUDIO-008"
+    description: "announceRestEnd() speaks '准备下一个动作'"
+    type: "OUTPUT"
+    
+  AC-AUDIO-009-01:
+    id: "AC-AUDIO-009-01"
+    requirement: "REQ-AUDIO-009"
+    description: "announceWorkoutComplete() speaks '训练完成，真棒！'"
+    type: "OUTPUT"
+    
+  AC-AUDIO-010-01:
+    id: "AC-AUDIO-010-01"
+    requirement: "REQ-AUDIO-010"
+    description: "toggleMute() switches isMuted state"
+    type: "STATE_CHANGE"
+    
+  AC-AUDIO-010-02:
+    id: "AC-AUDIO-010-02"
+    requirement: "REQ-AUDIO-010"
+    description: "when muted, all audio playback is silent"
+    type: "BEHAVIOR"
+
+# =============================================================================
+# Design Decisions
+# =============================================================================
+design_decisions:
+  DD-TIMER-001:
+    id: "DD-TIMER-001"
+    decision: "Use Stopwatch instead of Timer.periodic"
+    rationale: "Single instance, no per-screen timer creation"
+    source: "PLAN.md Line 98"
+    consequence: "Must manage Stopwatch lifecycle manually"
+    
+  DD-TIMER-002:
+    id: "DD-TIMER-002"
+    decision: "Use Stream<int> for countdown updates"
+    rationale: "Reactive pattern, UI can listen without tight coupling"
+    source: "PLAN.md Line 99"
+    consequence: "Stream must be closed properly to prevent leaks"
+    
+  DD-TIMER-003:
+    id: "DD-TIMER-003"
+    decision: "TimerStatus as enum (not string)"
+    rationale: "Type safety, exhaustive switch coverage"
+    source: "autoplan Decision #7"
+    consequence: "Compiler enforces all status handling"
+    
+  DD-AUDIO-001:
+    id: "DD-AUDIO-001"
+    decision: "Preload sound effects at app init"
+    rationale: "Instant playback without loading delay"
+    source: "PLAN.md Line 94"
+    consequence: "Adds ~2MB to app size"
+    
+  DD-AUDIO-002:
+    id: "DD-AUDIO-002"
+    decision: "Use audioplayers for effects, flutter_tts for voice"
+    rationale: "audioplayers for instant playback, TTS for dynamic text"
+    source: "PLAN.md Line 18"
+    consequence: "Two audio systems need coordination"
+    
+  DD-AUDIO-003:
+    id: "DD-AUDIO-003"
+    decision: "createPlayer() for voice (not cached)"
+    rationale: "Voice announcements don't need caching"
+    source: "PLAN.md Line 95"
+    consequence: "Each speak() creates new player instance"
+
+# =============================================================================
+# API Contracts
+# =============================================================================
+api_contracts:
+  TimerService:
+    class: "TimerService"
+    description: "Singleton service for countdown timer management"
+    
+    properties:
+      countdownStream:
+        type: "Stream<int>"
+        description: "Emits remaining seconds every tick"
+        
+      remainingSeconds:
+        type: "int"
+        description: "Current countdown value"
+        
+      status:
+        type: "TimerStatus"
+        description: "Current timer state (enum)"
+        
+      isRunning:
+        type: "bool"
+        description: "True if timer is running"
+        
+      isPaused:
+        type: "bool"
+        description: "True if timer is paused"
+    
+    methods:
+      start:
+        signature: "void start(int durationSeconds)"
+        description: "Start countdown from specified duration"
+        parameters:
+          durationSeconds:
+            type: "int"
+            description: "Total countdown duration"
+            constraints: "Must be > 0"
+        effects:
+          - "Sets status to running"
+          - "Begins countdownStream emission"
+          
+      pause:
+        signature: "void pause()"
+        description: "Pause countdown, preserving remaining seconds"
+        preconditions:
+          - "Timer must be running"
+        effects:
+          - "Sets status to paused"
+          - "Stops stream emission"
+          - "Preserves remainingSeconds"
+          
+      resume:
+        signature: "void resume()"
+        description: "Resume countdown from paused state"
+        preconditions:
+          - "Timer must be paused"
+        effects:
+          - "Sets status to running"
+          - "Resumes countdownStream emission"
+          
+      reset:
+        signature: "void reset()"
+        description: "Reset timer to idle state"
+        effects:
+          - "Sets remainingSeconds to 0"
+          - "Sets status to idle"
+          - "Closes countdownStream"
+          
+      setOnComplete:
+        signature: "void setOnComplete(VoidCallback callback)"
+        description: "Set callback for countdown completion"
+        parameters:
+          callback:
+            type: "VoidCallback"
+            description: "Function called when countdown reaches 0"
+
+  AudioService:
+    class: "AudioService"
+    description: "Service for audio playback and TTS announcements"
+    
+    properties:
+      isMuted:
+        type: "bool"
+        description: "Current mute state"
+        
+      volume:
+        type: "double"
+        description: "Current volume level (0.0 - 1.0)"
+    
+    methods:
+      preload:
+        signature: "Future<void> preload()"
+        description: "Preload all sound effect files"
+        effects:
+          - "Loads beep.mp3, countdown/*.mp3, complete.mp3"
+          
+      playBeep:
+        signature: "Future<void> playBeep()"
+        description: "Play short beep sound"
+        effects:
+          - "Plays beep.mp3 at current volume"
+          
+      playCountdown:
+        signature: "Future<void> playCountdown(int second)"
+        description: "Play countdown voice for specified second"
+        parameters:
+          second:
+            type: "int"
+            description: "Second to announce (1-5)"
+            constraints: "Must be in range [1, 5]"
+        effects:
+          - "Plays countdown/{second}.mp3"
+          
+      speak:
+        signature: "Future<void> speak(String text)"
+        description: "Convert text to speech"
+        parameters:
+          text:
+            type: "String"
+            description: "Text to speak"
+        effects:
+          - "Uses flutter_tts to speak text"
+          
+      setVolume:
+        signature: "void setVolume(double level)"
+        description: "Set audio volume"
+        parameters:
+          level:
+            type: "double"
+            description: "Volume level"
+            constraints: "Must be in range [0.0, 1.0]"
+        effects:
+          - "Affects all subsequent playback"
+          
+      toggleMute:
+        signature: "void toggleMute()"
+        description: "Toggle mute state"
+        effects:
+          - "Flips isMuted boolean"
+          
+      announceExerciseStart:
+        signature: "Future<void> announceExerciseStart(String exerciseName)"
+        description: "Announce exercise start"
+        parameters:
+          exerciseName:
+            type: "String"
+            description: "Name of exercise"
+        effects:
+          - "Speaks '开始：{exerciseName}'"
+          
+      announceExerciseComplete:
+        signature: "Future<void> announceExerciseComplete()"
+        description: "Announce exercise completion"
+        effects:
+          - "Speaks '动作完成，休息5秒'"
+          
+      announceRestEnd:
+        signature: "Future<void> announceRestEnd()"
+        description: "Announce rest period end"
+        effects:
+          - "Speaks '准备下一个动作'"
+          
+      announceWorkoutComplete:
+        signature: "Future<void> announceWorkoutComplete()"
+        description: "Announce workout completion"
+        effects:
+          - "Speaks '训练完成，真棒！'"
+
+# =============================================================================
+# Enums
+# =============================================================================
+enums:
+  TimerStatus:
+    values:
+      - idle: "Timer not started or reset"
+      - running: "Timer actively counting down"
+      - paused: "Timer paused, can be resumed"
+      - completed: "Timer reached zero"
+
+# =============================================================================
+# Edge Cases
+# =============================================================================
+edge_cases:
+  EC-TIMER-001:
+    id: "EC-TIMER-001"
+    scenario: "start() called when already running"
+    expected_behavior: "Reset to new duration, restart countdown"
+    
+  EC-TIMER-002:
+    id: "EC-TIMER-002"
+    scenario: "pause() called when not running"
+    expected_behavior: "No effect, returns gracefully"
+    
+  EC-TIMER-003:
+    id: "EC-TIMER-003"
+    scenario: "resume() called when not paused"
+    expected_behavior: "No effect, returns gracefully"
+    
+  EC-TIMER-004:
+    id: "EC-TIMER-004"
+    scenario: "start() called with duration = 0"
+    expected_behavior: "Immediately triggers onComplete, status = completed"
+    
+  EC-TIMER-005:
+    id: "EC-TIMER-005"
+    scenario: "Multiple listeners on countdownStream"
+    expected_behavior: "All listeners receive same values"
+    
+  EC-AUDIO-001:
+    id: "EC-AUDIO-001"
+    scenario: "playBeep() when muted"
+    expected_behavior: "Silent playback, no error"
+    
+  EC-AUDIO-002:
+    id: "EC-AUDIO-002"
+    scenario: "speak() called while previous speak() still playing"
+    expected_behavior: "Queue or interrupt (implementation choice)"
+    
+  EC-AUDIO-003:
+    id: "EC-AUDIO-003"
+    scenario: "preload() fails (file missing)"
+    expected_behavior: "Log error, continue with fallback"
+
+# =============================================================================
+# Test Coverage Requirements
+# =============================================================================
+test_coverage:
+  unit_tests:
+    TimerService:
+      file: "test/services/timer_service_test.dart"
+      coverage_target: "100%"
+      required_tests:
+        - "REQ-TIMER-001: start() test"
+        - "REQ-TIMER-002: pause() test"
+        - "REQ-TIMER-003: resume() test"
+        - "REQ-TIMER-004: reset() test"
+        - "REQ-TIMER-005: stream emission test"
+        - "REQ-TIMER-006: Stopwatch usage test"
+        - "REQ-TIMER-007: onComplete callback test"
+        - "REQ-TIMER-008: remainingSeconds getter test"
+        - "REQ-TIMER-009: status getter test"
+        - "Edge cases EC-TIMER-001 to EC-TIMER-005"
+        
+    AudioService:
+      file: "test/services/audio_service_test.dart"
+      coverage_target: "100%"
+      required_tests:
+        - "REQ-AUDIO-001: playBeep() test"
+        - "REQ-AUDIO-002: playCountdown() test"
+        - "REQ-AUDIO-003: speak() test"
+        - "REQ-AUDIO-004: setVolume() test"
+        - "REQ-AUDIO-005: preload() test"
+        - "REQ-AUDIO-006: announceExerciseStart() test"
+        - "REQ-AUDIO-007: announceExerciseComplete() test"
+        - "REQ-AUDIO-008: announceRestEnd() test"
+        - "REQ-AUDIO-009: announceWorkoutComplete() test"
+        - "REQ-AUDIO-010: toggleMute() test"
+        - "Edge cases EC-AUDIO-001 to EC-AUDIO-003"
+  
+  integration_tests:
+    required: false
+    note: "Services are isolated, unit tests sufficient"
+    
+  coverage_threshold:
+    line_coverage: 90
+    branch_coverage: 80
