@@ -1,7 +1,34 @@
-# AGENTS.MD - Flutter Android Development Setup
+# PROJECT KNOWLEDGE BASE
 
-## Overview
-This repository contains a Flutter Android development environment setup project with comprehensive documentation and automation scripts. It provides detailed guides for Windows + WSL2 + VSCode + Flutter + Android development setup. Focus on WSL2 Ubuntu with Flutter SDK 3.27.4 and Android SDK setup for APK building.
+**Generated:** 2026-04-11
+**Commit:** e7c1a23
+**Branch:** master
+
+## OVERVIEW
+Flutter Android development setup guide project. Documentation + scripts for WSL2 Ubuntu + Flutter SDK 3.27.4 + Android SDK. **No source code yet** - planning phase for Runner Training App (跑者训练APP).
+
+## STRUCTURE
+```
+sport-apk/                   # Flat structure - documentation only
+├── AGENTS.md                # This file - environment guide
+├── DESIGN.md                # App design (863 lines)
+├── PLAN.md                  # Implementation plan
+├── install_flutter.sh       # Automated SDK installer
+├── INSTALL_COMMANDS.md      # Quick reference
+├── MANUAL_INSTALL.md        # Step-by-step install
+├── VSCODE_WSL_SETUP.md      # VSCode + WSL2 setup
+└── DELPHI_CONSENSUS_REPORT.md # Consensus decisions
+```
+
+## WHERE TO LOOK
+| Task | Location | Notes |
+|------|----------|-------|
+| Setup environment | `install_flutter.sh` | Automated installer |
+| Manual install | `MANUAL_INSTALL.md` | Step-by-step guide |
+| App architecture | `DESIGN.md` | 863 lines, detailed UI/logic |
+| Implementation steps | `PLAN.md` | Feature breakdown |
+| Device debugging | `VSCODE_WSL_SETUP.md` | ADB over Network |
+| Quick commands | Below: Key Commands | Reference table |
 
 ## Environment Installation
 The environment is designed for Ubuntu 24.04.4 LTS on WSL2 with the following key installations:
@@ -46,8 +73,13 @@ The environment is designed for Ubuntu 24.04.4 LTS on WSL2 with the following ke
 - Video Playback: video_player package (official Flutter plugin)
 - Audio Feedback: audioplayers + flutter_tts (voice feedback and notifications)
 - Background Processing: flutter_background_service (if needed)
-- Screen On Protection: wakelock (keeping screen awake during training)
+- Screen On Protection: **wakelock_plus** (wakelock is deprecated)
 - UI Design: Follow Material Design principles (default Flutter)
+
+## ANTI-PATTERNS (THIS PROJECT)
+- **DO NOT use `wakelock` package** - Use `wakelock_plus` instead (deprecated)
+- Always source shell config after environment changes
+- Always accept Android licenses after SDK installation
 
 ## Common Issues and Solutions
 - License issues: Run `yes | flutter doctor --android-licenses` (always after initial setup)
@@ -97,7 +129,7 @@ The environment is designed for Ubuntu 24.04.4 LTS on WSL2 with the following ke
 - WSL+Flutter setup: `VSCODE_WSL_SETUP.md`
 - Planned app architecture: `DESIGN.md` and `PLAN.md`
 
-## Gotchas for Future Sessions
+## NOTES
 - Always source `.zshrc` or `.bashrc` after environment variable changes: `source ~/.zshrc`
 - Must accept Android licenses after Android SDK installation
 - WSL2 requires special setup for physical device debugging (ADB over Network recommended)
