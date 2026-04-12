@@ -35,6 +35,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Audio playback for countdown beeps and voice
+  audioplayers: ^6.6.0
+
+  # Text-to-speech for announcements (Chinese voice)
+  flutter_tts: ^4.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -45,6 +51,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+  # Mocking library for unit tests (no code generation required)
+  mocktail: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
