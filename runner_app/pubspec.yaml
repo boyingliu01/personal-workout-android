@@ -41,6 +41,12 @@ dependencies:
   # Text-to-speech for announcements (Chinese voice)
   flutter_tts: ^4.0.0
 
+  # State management (type-safe, testable)
+  flutter_riverpod: ^2.6.0
+
+  # UUID generation for session IDs
+  uuid: ^4.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
