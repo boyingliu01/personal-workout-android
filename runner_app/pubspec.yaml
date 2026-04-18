@@ -41,6 +41,9 @@ dependencies:
   # Text-to-speech for announcements (Chinese voice)
   flutter_tts: ^4.0.0
 
+  # Video playback for exercise demonstrations  
+  video_player: ^2.8.0
+
   # State management (type-safe, testable)
   flutter_riverpod: ^2.6.0
 
@@ -49,6 +52,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.1.5
+
+  # Shared preferences for local storage
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
