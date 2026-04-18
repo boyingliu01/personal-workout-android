@@ -342,5 +342,47 @@ void main() {
         expect(retrieved.workoutType, WorkoutType.stretch);
       });
     });
+
+    group('StateError Tests', () {
+      test('@test EC-STORAGE-003 operations before init throw StateError',
+          () async {
+        final uninitializedService = StorageService();
+
+        expect(
+          () => uninitializedService.saveSession(
+            WorkoutSession(
+              id: 'test',
+              workoutId: 'test',
+              workoutName: 'Test',
+              workoutType: WorkoutType.warmup,
+              startTime: DateTime.now(),
+              totalExercises: 1,
+            ),
+          ),
+          throwsStateError,
+        );
+      });
+
+      test(
+          '@test EC-STORAGE-003 getCurrentSession before init throws StateError',
+          () async {
+        final uninitializedService = StorageService();
+
+        expect(
+          () => uninitializedService.getCurrentSession(),
+          throwsStateError,
+        );
+      });
+
+      test('@test EC-STORAGE-003 clearSession before init throws StateError',
+          () async {
+        final uninitializedService = StorageService();
+
+        expect(
+          () => uninitializedService.clearSession(),
+          throwsStateError,
+        );
+      });
+    });
   });
 }
