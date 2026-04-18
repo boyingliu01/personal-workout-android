@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'routes.dart';
 import 'constants/app_theme.dart';
 import 'constants/app_strings.dart';
+import 'constants/exercise_data.dart';
+import 'routes.dart';
 
 /// Main entry point for the Runner Training app
 void main() {
@@ -23,7 +24,27 @@ class RunnerTrainingApp extends StatelessWidget {
       title: AppStrings.appTitle,
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.home,
-      routes: AppRoutes.routes,
+      // Use onGenerateRoute for parameterized navigation
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      home: const HomeScreenProvider(),
+    );
+  }
+}
+
+/// Wrapper that provides workout data to HomeScreen
+class HomeScreenProvider extends StatelessWidget {
+  const HomeScreenProvider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Import HomeScreen via routes to avoid circular deps
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, AppRoutes.home),
+      child: const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }
