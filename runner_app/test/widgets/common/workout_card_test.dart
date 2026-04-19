@@ -7,7 +7,7 @@ import 'package:runner_app/widgets/common/simple_workout_card.dart';
 void main() {
   group('SimpleWorkoutCard', () {
     group('REQ-CARD-001: Display', () {
-      test('@test REQ-CARD-001 shows workout name',
+      testWidgets('@test REQ-CARD-001 shows workout name',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -25,7 +25,7 @@ void main() {
         expect(find.text('跑前动态热身'), findsOneWidget);
       });
 
-      test('@test REQ-CARD-001 shows exercise count',
+      testWidgets('@test REQ-CARD-001 shows exercise count',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -43,7 +43,7 @@ void main() {
         expect(find.text('10 个动作'), findsOneWidget);
       });
 
-      test('@test REQ-CARD-001 shows estimated time',
+      testWidgets('@test REQ-CARD-001 shows estimated time',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -61,7 +61,7 @@ void main() {
         expect(find.text('20 分钟'), findsOneWidget);
       });
 
-      test('@test REQ-CARD-001 is wrapped in a Card widget',
+      testWidgets('@test REQ-CARD-001 is wrapped in a Card widget',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -81,7 +81,7 @@ void main() {
     });
 
     group('REQ-CARD-002: Type icon', () {
-      test('@test REQ-CARD-002 shows fire icon for warmup type',
+      testWidgets('@test REQ-CARD-002 shows fire icon for warmup type',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -99,7 +99,7 @@ void main() {
         expect(find.byIcon(Icons.local_fire_department), findsOneWidget);
       });
 
-      test('@test REQ-CARD-002 shows access icon for stretch type',
+      testWidgets('@test REQ-CARD-002 shows access icon for stretch type',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -118,7 +118,7 @@ void main() {
         expect(find.byIcon(Icons.accessibility), findsOneWidget);
       });
 
-      test('@test REQ-CARD-002 shows fitness_center icon for strength type',
+      testWidgets('@test REQ-CARD-002 shows fitness_center icon for strength type',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -138,7 +138,7 @@ void main() {
     });
 
     group('REQ-CARD-003: Type accent color', () {
-      test('@test REQ-CARD-003 warmup uses warmupAccent color',
+      testWidgets('@test REQ-CARD-003 warmup uses warmupAccent color',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -158,7 +158,7 @@ void main() {
         expect(icon.color, AppColors.warmupAccent);
       });
 
-      test('@test REQ-CARD-003 stretch uses stretchAccent color',
+      testWidgets('@test REQ-CARD-003 stretch uses stretchAccent color',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -177,7 +177,7 @@ void main() {
         expect(icon.color, AppColors.stretchAccent);
       });
 
-      test('@test REQ-CARD-003 strength uses strengthAccent color',
+      testWidgets('@test REQ-CARD-003 strength uses strengthAccent color',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -198,7 +198,7 @@ void main() {
     });
 
     group('REQ-CARD-004: Tappable', () {
-      test('@test REQ-CARD-004 calls onTap when card is tapped',
+      testWidgets('@test REQ-CARD-004 calls onTap when card is tapped',
           (WidgetTester tester) async {
         var tapped = false;
 
@@ -224,7 +224,7 @@ void main() {
         expect(tapped, isTrue);
       });
 
-      test('@test REQ-CARD-004 onTap is optional', (WidgetTester tester) async {
+      testWidgets('@test REQ-CARD-004 onTap is optional', (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(

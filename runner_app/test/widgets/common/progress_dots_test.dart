@@ -5,7 +5,7 @@ import 'package:runner_app/widgets/common/progress_dots.dart';
 void main() {
   group('ProgressDots', () {
     group('REQ-DOTS-001: Display', () {
-      test('@test REQ-DOTS-001 renders correct number of total dots',
+      testWidgets('@test REQ-DOTS-001 renders correct number of total dots',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -18,7 +18,7 @@ void main() {
         expect(find.byType(GestureDetector), findsNWidgets(5));
       });
 
-      test('@test REQ-DOTS-001 single dot when total is 1',
+      testWidgets('@test REQ-DOTS-001 single dot when total is 1',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -33,8 +33,7 @@ void main() {
     });
 
     group('REQ-DOTS-002: Active vs inactive dots', () {
-      test(
-          '@test REQ-DOTS-002 active dots use filled Container with primary color',
+      testWidgets('@test REQ-DOTS-002 active dots use filled Container with primary color',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -61,7 +60,7 @@ void main() {
         }
       });
 
-      test('@test REQ-DOTS-002 inactive dots use outlined Container',
+      testWidgets('@test REQ-DOTS-002 inactive dots use outlined Container',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -86,7 +85,7 @@ void main() {
         }
       });
 
-      test('@test REQ-DOTS-002 all dots active when current equals total',
+      testWidgets('@test REQ-DOTS-002 all dots active when current equals total',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -113,7 +112,7 @@ void main() {
     });
 
     group('REQ-DOTS-003: Tappable dots', () {
-      test('@test REQ-DOTS-003 tapping dot calls onTap with correct position',
+      testWidgets('@test REQ-DOTS-003 tapping dot calls onTap with correct position',
           (WidgetTester tester) async {
         int? tappedPosition;
 
@@ -139,7 +138,7 @@ void main() {
         expect(tappedPosition, 3);
       });
 
-      test('@test REQ-DOTS-003 onTap is optional and does not crash when null',
+      testWidgets('@test REQ-DOTS-003 onTap is optional and does not crash when null',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -157,7 +156,7 @@ void main() {
     });
 
     group('REQ-DOTS-004: Layout', () {
-      test('@test REQ-DOTS-004 dots are arranged in a Row',
+      testWidgets('@test REQ-DOTS-004 dots are arranged in a Row',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -170,7 +169,7 @@ void main() {
         expect(find.byType(Row), findsOneWidget);
       });
 
-      test('@test REQ-DOTS-004 dots are centered', (WidgetTester tester) async {
+      testWidgets('@test REQ-DOTS-004 dots are centered', (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(

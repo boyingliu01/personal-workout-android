@@ -16,10 +16,17 @@ void main() {
     setUp(() {
       mockController = MockVideoPlayerController();
       videoService = VideoService(mockController);
+      
+      // Setup common default mock return values
+      when(() => mockController.initialize()).thenAnswer((_) async {});
+      when(() => mockController.dispose()).thenAnswer((_) async {});
+      when(() => mockController.play()).thenAnswer((_) async {});
+      when(() => mockController.pause()).thenAnswer((_) async {});
+      when(() => mockController.value).thenReturn(VideoPlayerValue(isInitialized: true, position: const Duration(seconds: 0), duration: const Duration(seconds: 30)));
     });
 
-    tearDown(() {
-      videoService.dispose();
+    tearDown(() async {
+      await videoService.dispose();
     });
 
     test('initial state is correct', () {
@@ -31,55 +38,66 @@ void main() {
     test('loadVideo sets loading state and loads video', () async {
       final path = 'assets/videos/test.mp4';
 
-      // Mock the initialize method
-      when(() => mockController.initialize()).thenAnswer((_) => Future.value());
-
       await videoService.loadVideo(path);
 
-      verify(mockController.initialize).called(1);
-      expect(
-          videoService.isLoading, false); // Since the video loads immediately
+      verify(() => mockController.initialize()).called(1);
+      expect(videoService.isLoading, false); // Since the video loads successfully
     });
 
     test('play starts the video and updates state', () async {
-      when(() => mockController.play()).thenAnswer((_) => Future.value());
-      when(() => mockController.initialize()).thenAnswer((_) => Future.value());
-
+      // Initialize controller first
+      final mockControllerNew = MockVideoPlayerController();
+      when(() => mockControllerNew.initialize()).thenAnswer((_) async {});
+      when(() => mockControllerNew.play()).thenAnswer((_) async {});
+      when(() => mockControllerNew.value).thenReturn(VideoPlayerValue(isInitialized: true, position: const Duration(seconds: 0), duration: const Duration(seconds: 30)));
+      
+      videoService = VideoService(mockControllerNew);
+      
       await videoService.loadVideo('assets/videos/test.mp4');
       videoService.play();
 
-      verify(() => mockController.play()).called(1);
+      verify(() => mockControllerNew.play()).called(1);
     });
 
     test('pause stops the video', () async {
-      when(() => mockController.pause()).thenAnswer((_) => Future.value());
-      when(() => mockController.initialize()).thenAnswer((_) => Future.value());
-
+      // Initialize controller first
+      final mockControllerNew = MockVideoPlayerController(); 
+      when(() => mockControllerNew.initialize()).thenAnswer((_) async {});
+      when(() => mockControllerNew.pause()).thenAnswer((_) async {});
+      when(() => mockControllerNew.value).thenReturn(VideoPlayerValue(isInitialized: true, position: const Duration(seconds: 0), duration: const Duration(seconds: 30)));
+      
+      videoService = VideoService(mockControllerNew);
+      
       await videoService.loadVideo('assets/videos/test.mp4');
       videoService.pause();
 
-      verify(() => mockController.pause()).called(1);
+      verify(() => mockControllerNew.pause()).called(1);
     });
 
     test('dispose disposes the underlying controller', () async {
-      when(() => mockController.initialize()).thenAnswer((_) => Future.value());
-      when(() => mockController.dispose()).thenAnswer((_) => Future.value());
-
+      // Create a fresh service for this test
+      final mockControllerNew = MockVideoPlayerController();
+      when(() => mockControllerNew.initialize()).thenAnswer((_) async {});
+      when(() => mockControllerNew.dispose()).thenAnswer((_) async {});
+      when(() => mockControllerNew.value).thenReturn(VideoPlayerValue(isInitialized: true, position: const Duration(seconds: 0), duration: const Duration(seconds: 30)));
+      
+      videoService = VideoService(mockControllerNew);
+      
       await videoService.loadVideo('assets/videos/test.mp4');
       await videoService.dispose();
 
-      verify(() => mockController.dispose()).called(1);
+      verify(() => mockControllerNew.dispose()).called(1);
     });
 
     test('error state is set when initialization fails', () async {
-      when(() => mockController.initialize())
-          .thenThrow(Exception('Failed to load video'));
+      final mockControllerNew = MockVideoPlayerController();
+      when(() => mockControllerNew.initialize()).thenThrow(Exception('Failed to load video'));
+      when(() => mockControllerNew.value).thenReturn(VideoPlayerValue(isInitialized: false, position: const Duration(seconds: 0), duration: const Duration(seconds: 30)));
+      
+      videoService = VideoService(mockControllerNew);
 
-      await expectLater(videoService.loadVideo('assets/videos/bad_path.mp4'),
+      await expectLater(videoService.loadVideo('assets/videos/bad_path.mp4'), 
           throwsException);
-
-      // The error state should be reflected in hasError property
-      // This will depend on how the actual implementation handles errors
     });
   });
 }

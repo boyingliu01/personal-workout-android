@@ -5,7 +5,7 @@ import 'package:runner_app/widgets/common/exercise_list_item.dart';
 void main() {
   group('ExerciseListItem', () {
     group('REQ-EXLIST-001: Display', () {
-      test('@test REQ-EXLIST-001 shows exercise name',
+      testWidgets('@test REQ-EXLIST-001 shows exercise name',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -23,7 +23,7 @@ void main() {
         expect(find.text('开合跳'), findsOneWidget);
       });
 
-      test('@test REQ-EXLIST-001 shows duration in MM:SS format',
+      testWidgets('@test REQ-EXLIST-001 shows duration in MM:SS format',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -41,7 +41,7 @@ void main() {
         expect(find.text('1:00'), findsOneWidget);
       });
 
-      test('@test REQ-EXLIST-001 shows duration for 45 seconds as 0:45',
+      testWidgets('@test REQ-EXLIST-001 shows duration for 45 seconds as 0:45',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -59,7 +59,7 @@ void main() {
         expect(find.text('0:45'), findsOneWidget);
       });
 
-      test('@test REQ-EXLIST-001 uses ListTile', (WidgetTester tester) async {
+      testWidgets('@test REQ-EXLIST-001 uses ListTile', (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
             home: Scaffold(
@@ -78,7 +78,7 @@ void main() {
     });
 
     group('REQ-EXLIST-002: Number badge', () {
-      test('@test REQ-EXLIST-002 shows index number in leading badge',
+      testWidgets('@test REQ-EXLIST-002 shows index number in leading badge',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -96,7 +96,7 @@ void main() {
         expect(find.text('3'), findsOneWidget);
       });
 
-      test('@test REQ-EXLIST-002 badge uses CircleAvatar',
+      testWidgets('@test REQ-EXLIST-002 badge uses CircleAvatar',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -116,7 +116,7 @@ void main() {
     });
 
     group('REQ-EXLIST-003: Target muscle chips', () {
-      test('@test REQ-EXLIST-003 shows target muscles as text in subtitle',
+      testWidgets('@test REQ-EXLIST-003 shows target muscles as text in subtitle',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -135,7 +135,7 @@ void main() {
         expect(find.textContaining('core'), findsOneWidget);
       });
 
-      test('@test REQ-EXLIST-003 shows nothing when targetMuscles is empty',
+      testWidgets('@test REQ-EXLIST-003 shows nothing when targetMuscles is empty',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
@@ -156,7 +156,7 @@ void main() {
     });
 
     group('REQ-EXLIST-004: Trailing content', () {
-      test('@test REQ-EXLIST-004 shows chevron_right icon as trailing',
+      testWidgets('@test REQ-EXLIST-004 shows chevron_right icon as trailing',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           const MaterialApp(
