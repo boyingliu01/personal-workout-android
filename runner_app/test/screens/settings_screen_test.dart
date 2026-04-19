@@ -63,14 +63,14 @@ void main() {
         ),
       );
 
-      expect(find.byType(Switch), findsAtLeastNTimes(1));
+      expect(find.byType(Switch), findsWidgets);
 
       // Find and tap the audio toggle
       await tester.tap(find.byType(Switch).first);
       await tester.pump();
 
       // Verify the switch changes state after tap
-      expect(find.byType(Switch), findsAtLeastNTimes(1));
+      expect(find.byType(Switch), findsWidgets);
     });
 
     testWidgets('Clear history button displays and functionally tested',
