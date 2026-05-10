@@ -1,0 +1,105 @@
+import 'package:strength_app/domain/entities/exercise.dart';
+import 'package:strength_app/domain/entities/workout.dart';
+
+class ExerciseData {
+  ExerciseData._();
+
+  static const Workout legsWorkout = Workout(
+    id: 'legs',
+    name: '臀腿训练',
+    description: '针对跑者的核心力量训练',
+    estimatedMinutes: 15,
+    exercises: [
+      Exercise(
+        id: 'squat',
+        name: '深蹲',
+        description: '双脚与肩同宽，膝盖弯曲至大腿与地面平行，背部挺直',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['臀部', '大腿前侧'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'deadlift',
+        name: '硬拉',
+        description: '双手持重物，向前弯腰，背部挺直，感受大腿后侧拉伸',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['臀部', '大腿后侧'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'lunge',
+        name: '箭步蹲',
+        description: '向前跨一步，膝盖弯曲，身体向下蹲，保持平衡',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['大腿前侧', '大腿后侧'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'side_lunge',
+        name: '侧蹲',
+        description: '向一侧跨步，膝盖弯曲，身体向下蹲，感受大腿内侧拉伸',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['大腿内侧', '大腿外侧'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'calf_raise',
+        name: '提踵',
+        description: '双脚站立，踮起脚尖，保持几秒后放下，锻炼小腿',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['小腿'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'glute_bridge',
+        name: '臀桥',
+        description: '仰卧屈膝，向上推臀部至身体成直线',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['臀部', '核心'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'single_leg_deadlift',
+        name: '单腿硬拉',
+        description: '单腿站立，向前弯腰，另一条腿向后抬起，保持平衡',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['臀部', '大腿后侧', '核心'],
+        difficulty: Difficulty.intermediate,
+        category: ExerciseCategory.legs,
+      ),
+      Exercise(
+        id: 'leg_press',
+        name: '腿举',
+        description: '仰卧屈膝，向上推双腿至伸直，感受大腿前侧发力',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: ['大腿前侧', '臀部'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      ),
+    ],
+  );
+
+  static List<Workout> get allWorkouts => [legsWorkout];
+}
