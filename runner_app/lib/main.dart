@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:strength_app/presentation/screens/home_screen.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(
@@ -48,19 +49,7 @@ class StrengthApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF8F9FA),
       ),
-      home: const _HomePlaceholder(),
-    );
-  }
-}
-
-class _HomePlaceholder extends StatelessWidget {
-  const _HomePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('力量训练')),
-      body: const Center(child: Text('首页开发中...')),
+      home: const HomeScreen(),
     );
   }
 }
