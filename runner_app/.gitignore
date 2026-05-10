@@ -33,9 +33,6 @@ migrate_working_dir/
 .pub/
 /build/
 
-# Coverage
-coverage/
-
 # Symbolication related
 app.*.symbols
 
@@ -46,4 +43,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-test_hive/

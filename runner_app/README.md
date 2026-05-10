@@ -1,4 +1,4 @@
-# runner_app
+# strength_app
 
 A new Flutter project.
 
