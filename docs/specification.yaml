@@ -1,0 +1,161 @@
+name: strength_app
+description: "Personal strength training app for runners - 8 leg/hip exercises"
+version: "2.0.0-sprint2"
+generated: "2026-05-17"
+
+coreFeatures:
+  homeScreen:
+    - "Display workout cards from ExerciseData"
+    - "Show welcome header with training prompt"
+    - "Navigate to settings via FAB"
+    - "Navigate to WorkoutDetailScreen on card tap"
+
+  settingsScreen:
+    - "Volume control (0.0-1.0)"
+    - "Voice enable/disable toggle"
+    - "Sound enable/disable toggle"
+    - "Keep screen on toggle"
+    - "All settings persisted in Hive"
+
+  workoutDetailScreen:
+    - "Show workout name, description, duration"
+    - "List all exercises with index, name, duration, target muscles"
+    - "Difficulty indicator (green/orange/red)"
+    - "Start training button"
+
+  exerciseScreen:
+    - "Countdown timer with circular progress indicator"
+    - "Display exercise name, description, target muscles"
+    - "Pause/Resume controls"
+    - "Skip exercise button"
+    - "Auto-transition to rest when timer completes"
+    - "Progress dots showing completion status"
+
+  restScreen:
+    - "Rest countdown timer"
+    - "Next exercise preview"
+    - "Skip rest button"
+    - "Auto-transition to next exercise when timer completes"
+    - "Last exercise celebration message when applicable"
+
+  workoutCompleteScreen:
+    - "Completion checkmark icon"
+    - "Display completed exercises count"
+    - "Display total duration"
+    - "Return home button"
+    - "Session persistence via TrainingStorage"
+
+architecture:
+  stateManagement:
+    - "Riverpod StateNotifierProvider for training session"
+    - "TrainingState enum: home, detail, exercising, resting, complete"
+    - "AutoDispose for page-scoped providers"
+    - "AppScope for service singletons"
+
+  dataLayer:
+    - "Hive for local storage"
+    - "SettingsStorage for app preferences"
+    - "TrainingStorage for session history"
+    - "JSON serialization for complex objects"
+
+  coreServices:
+    timerService: "Stream-based countdown timer"
+    audioService: "Volume/mute/voice controls (stubs)"
+
+  navigation:
+    - "Simple Navigator.push/pop"
+    - "TrainingFlowScreen routes based on TrainingState"
+    - "Return home functionality with popUntil"
+
+dataModel:
+  exercise:
+    fields:
+      - id
+      - name
+      - description
+      - imagePath
+      - durationSeconds
+      - restSeconds
+      - targetMuscles
+      - difficulty
+      - category
+
+  workout:
+    fields:
+      - id
+      - name
+      - description
+      - estimatedMinutes
+      - exercises
+    computed:
+      - totalDurationSeconds
+
+  trainingSession:
+    fields:
+      - id
+      - workoutId
+      - workoutName
+      - startTime
+      - endTime
+      - completedExercises
+      - totalExercises
+      - totalSeconds
+      - exerciseLogs
+
+  exerciseLog:
+    fields:
+      - exerciseId
+      - exerciseName
+      - actualSeconds
+      - completed
+
+hardcodedExercises:
+  name: "Legs Workout"
+  count: 8
+  restSeconds: 30
+  exercises:
+    - name: "深蹲"
+      english: "Squats"
+      durationSeconds: 60
+    - name: "弓步蹲"
+      english: "Lunges"
+      durationSeconds: 60
+    - name: "单腿硬拉"
+      english: "Single-leg Deadlift"
+      durationSeconds: 60
+    - name: "侧弓步"
+      english: "Side Lunges"
+      durationSeconds: 60
+    - name: "臀桥"
+      english: "Glute Bridge"
+      durationSeconds: 60
+    - name: "单腿臀桥"
+      english: "Single-leg Glute Bridge"
+      durationSeconds: 60
+    - name: "靠墙静蹲"
+      english: "Wall Sit"
+      durationSeconds: 60
+    - name: "提踵"
+      english: "Calf Raises"
+      durationSeconds: 60
+
+technicalRequirements:
+  flutter: "3.27.4+"
+  androidMinSdk: 24
+  androidCompileSdk: 36
+  kotlin: "2.1.0"
+  riverpod: true
+  hive: true
+
+testing:
+  unitTests:
+    - "Domain entities"
+    - "Services"
+    - "State management"
+  widgetTests: "Partial"
+  targetCoverage: "80%+"
+
+knownIssues:
+  - "WSL2 flutter test subprocess crashes (environment issue)"
+  - "Widget tests partially failing due to UI rendering"
+  - "AudioService uses stub implementations"
