@@ -33,7 +33,7 @@ void main() {
         estimatedMinutes: 0,
         exercises: [_exercise, _exercise],
       );
-      expect(w.totalDurationSeconds, 130);
+      expect(w.totalDurationSeconds, 125); // 60 + 5 + 60 (no rest after last)
     });
   });
 }
