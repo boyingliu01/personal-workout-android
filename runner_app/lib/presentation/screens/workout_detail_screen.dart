@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strength_app/domain/entities/exercise.dart';
 import 'package:strength_app/domain/entities/workout.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
+import 'package:strength_app/presentation/screens/training_flow_screen.dart';
 
 class WorkoutDetailScreen extends ConsumerWidget {
   const WorkoutDetailScreen({super.key});
@@ -173,13 +174,13 @@ class _ExerciseListItem extends StatelessWidget {
   }
 }
 
-class _StartButton extends StatelessWidget {
+class _StartButton extends ConsumerWidget {
   final Workout workout;
 
   const _StartButton({required this.workout});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -187,7 +188,11 @@ class _StartButton extends StatelessWidget {
           width: double.infinity,
           child: FilledButton.icon(
             onPressed: () {
-              // TODO: Navigate to ExerciseScreen
+              ref.read(trainingSessionProvider.notifier).startWorkout();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TrainingFlowScreen()),
+              );
             },
             icon: const Icon(Icons.play_arrow),
             label: const Text('开始训练'),
