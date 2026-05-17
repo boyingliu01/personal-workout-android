@@ -50,7 +50,12 @@ class _RestScreenState extends ConsumerState<RestScreen> {
 
   void _onRestComplete() {
     _timer.stop();
-    ref.read(trainingSessionProvider.notifier).skipRest();
+    final notifier = ref.read(trainingSessionProvider.notifier);
+    if (ref.read(trainingSessionProvider).isLastExercise) {
+      notifier.completeWorkout();
+    } else {
+      notifier.skipRest();
+    }
   }
 
   void _skipRest() {

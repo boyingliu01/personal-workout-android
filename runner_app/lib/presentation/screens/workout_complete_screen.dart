@@ -1,19 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:strength_app/data/repositories/training_storage.dart';
 import 'package:strength_app/domain/entities/training_session.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
 
-class WorkoutCompleteScreen extends ConsumerWidget {
+class WorkoutCompleteScreen extends ConsumerStatefulWidget {
   const WorkoutCompleteScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WorkoutCompleteScreen> createState() =>
+      _WorkoutCompleteScreenState();
+}
+
+class _WorkoutCompleteScreenState
+    extends ConsumerState<WorkoutCompleteScreen> {
+  bool _saved = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_saved) {
+      final session = ref.read(trainingSessionProvider).completedSession;
+      if (session != null) {
+        final storage = TrainingStorage(box: Hive.box('sessions'));
+        storage.saveSession(session).then((_) {
+          if (mounted) setState(() => _saved = true);
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final session = ref.watch(trainingSessionProvider).completedSession;
 
     return Scaffold(
       appBar: AppBar(title: const Text('训练完成')),
       body: session != null
-          ? _CompleteContent(session: session, ref: ref)
+          ? _CompleteContent(
+              session: session,
+              onGoHome: () {
+                ref.read(trainingSessionProvider.notifier).goHome();
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+            )
           : const Center(child: Text('训练记录未找到')),
     );
   }
@@ -21,9 +52,9 @@ class WorkoutCompleteScreen extends ConsumerWidget {
 
 class _CompleteContent extends StatelessWidget {
   final TrainingSession session;
-  final WidgetRef ref;
+  final VoidCallback onGoHome;
 
-  const _CompleteContent({required this.session, required this.ref});
+  const _CompleteContent({required this.session, required this.onGoHome});
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +79,7 @@ class _CompleteContent extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             FilledButton.icon(
-              onPressed: () {
-                ref.read(trainingSessionProvider.notifier).goHome();
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
+              onPressed: onGoHome,
               icon: const Icon(Icons.home),
               label: const Text('返回首页'),
             ),

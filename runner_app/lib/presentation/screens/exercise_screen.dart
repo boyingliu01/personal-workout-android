@@ -12,20 +12,14 @@ class ExerciseScreen extends ConsumerStatefulWidget {
   ConsumerState<ExerciseScreen> createState() => _ExerciseScreenState();
 }
 
-class _ExerciseScreenState extends ConsumerState<ExerciseScreen>
-    with SingleTickerProviderStateMixin {
+class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
   final TimerService _timer = TimerService();
   late StreamSubscription<int> _subscription;
   int _elapsedSeconds = 0;
-  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
 
     _timer.start();
     _subscription = _timer.stream.listen((seconds) {
@@ -47,7 +41,6 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen>
   void dispose() {
     _subscription.cancel();
     _timer.dispose();
-    _animationController.dispose();
     super.dispose();
   }
 
