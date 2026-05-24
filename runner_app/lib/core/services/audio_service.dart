@@ -1,5 +1,12 @@
-/// Audio service for playing sounds and text-to-speech.
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+/// Audio service for TTS voice prompts and tick sounds during training.
 class AudioService {
+  final FlutterTts _tts = FlutterTts();
+  final AudioPlayer _player = AudioPlayer();
   double _volume = 0.8;
   bool _muted = false;
   bool _voiceEnabled = true;
@@ -8,9 +15,22 @@ class AudioService {
   bool get isMuted => _muted;
   bool get voiceEnabled => _voiceEnabled;
 
+  /// Initialize TTS and preload tick sound.
+  Future<bool> preload() async {
+    try {
+      await _tts.setLanguage('zh-CN');
+      await _tts.setSpeechRate(0.5);
+      await _tts.setVolume(_volume);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   void setVolume(double value) {
     assert(value >= 0.0 && value <= 1.0);
     _volume = value;
+    unawaited(_tts.setVolume(_volume));
   }
 
   void toggleMute() {
@@ -21,25 +41,38 @@ class AudioService {
     _voiceEnabled = enabled;
   }
 
-  /// Play a beep sound. No-op when muted.
-  void playBeep() {
+  /// Play a short tick/beep sound. No-op when muted.
+  Future<void> playTick() async {
     if (_muted) return;
-    // Real implementation uses audioplayers
+    try {
+      await _player.play(AssetSource('audio/tick.wav'),
+          volume: _volume * 0.3);
+    } catch (e) {
+      // Tick sound failed, continue silently
+    }
   }
 
   /// Speak text using TTS. No-op when voice disabled or muted.
-  void speak(String text) {
+  Future<void> speak(String text) async {
     if (_muted || !_voiceEnabled) return;
-    // Real implementation uses flutter_tts
+    try {
+      await _tts.speak(text);
+    } catch (e) {
+      // TTS failed, continue silently
+    }
   }
 
-  /// Pre-load audio resources. Returns true if successful.
-  Future<bool> preload() async {
+  /// Stop current TTS speech.
+  Future<void> stop() async {
     try {
-      // Real implementation preloads beep sounds
-      return true;
+      await _tts.stop();
     } catch (e) {
-      return false;
+      // Ignore
     }
+  }
+
+  void dispose() {
+    unawaited(_tts.stop().catchError((_) {}));
+    unawaited(_player.dispose().catchError((_) {}));
   }
 }

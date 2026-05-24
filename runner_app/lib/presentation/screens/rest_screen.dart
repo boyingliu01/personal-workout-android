@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/core/services/audio_service.dart';
 import 'package:strength_app/core/services/timer_service.dart';
 import 'package:strength_app/domain/entities/exercise.dart';
+import 'package:strength_app/presentation/providers/audio_provider.dart';
+import 'package:strength_app/presentation/providers/settings_provider.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
 
 class RestScreen extends ConsumerStatefulWidget {
@@ -17,11 +20,18 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   final TimerService _timer = TimerService();
   late StreamSubscription<int> _subscription;
   int _elapsedSeconds = 0;
+  late AudioService _audioService;
 
   @override
   void initState() {
     super.initState();
+
+    _audioService = ref.read(audioServiceProvider);
+    unawaited(_audioService.preload());
+
     _timer.start();
+    _playRestStartPrompt();
+
     _subscription = _timer.stream.listen((seconds) {
       if (!mounted) return;
       setState(() {
@@ -29,6 +39,9 @@ class _RestScreenState extends ConsumerState<RestScreen> {
       });
 
       final restDuration = _getRestDuration();
+      final remaining = restDuration - seconds;
+      _playCountdownForRest(remaining);
+
       if (seconds >= restDuration) {
         _onRestComplete();
       }
@@ -39,7 +52,33 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   void dispose() {
     _subscription.cancel();
     _timer.dispose();
+    _audioService.stop();
     super.dispose();
+  }
+
+  /// Play "准备继续 — [下一个动作名称]" when rest starts.
+  void _playRestStartPrompt() {
+    final settings = ref.read(settingsProvider);
+    if (!settings.voiceEnabled) return;
+    final session = ref.read(trainingSessionProvider);
+    final next = session.nextExercise;
+    if (next != null) {
+      _audioService.speak('准备继续 — ${next.name}');
+    }
+  }
+
+  /// Play countdown voice at the last 3 seconds, tick otherwise.
+  void _playCountdownForRest(int remaining) {
+    final settings = ref.read(settingsProvider);
+    if (remaining <= 3 && remaining > 0) {
+      if (settings.voiceEnabled) {
+        _audioService.speak('$remaining');
+      }
+    } else {
+      if (settings.soundEnabled) {
+        _audioService.playTick();
+      }
+    }
   }
 
   int _getRestDuration() {
@@ -51,7 +90,11 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   void _onRestComplete() {
     _timer.stop();
     final notifier = ref.read(trainingSessionProvider.notifier);
+    final settings = ref.read(settingsProvider);
     if (ref.read(trainingSessionProvider).isLastExercise) {
+      if (settings.voiceEnabled) {
+        _audioService.speak('时间到！恭喜，训练完成！');
+      }
       notifier.completeWorkout();
     } else {
       notifier.skipRest();

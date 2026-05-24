@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/core/services/audio_service.dart';
 import 'package:strength_app/core/services/timer_service.dart';
+import 'package:strength_app/domain/entities/exercise.dart';
+import 'package:strength_app/presentation/providers/audio_provider.dart';
+import 'package:strength_app/presentation/providers/settings_provider.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
 
 class ExerciseScreen extends ConsumerStatefulWidget {
@@ -16,12 +20,18 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
   final TimerService _timer = TimerService();
   late StreamSubscription<int> _subscription;
   int _elapsedSeconds = 0;
+  late AudioService _audioService;
 
   @override
   void initState() {
     super.initState();
 
+    _audioService = ref.read(audioServiceProvider);
+    unawaited(_audioService.preload());
+
     _timer.start();
+    _playExerciseStartPrompt();
+
     _subscription = _timer.stream.listen((seconds) {
       if (!mounted) return;
       setState(() {
@@ -29,26 +39,64 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
       });
 
       final exercise = ref.read(trainingSessionProvider).currentExercise;
-      if (exercise != null && seconds >= exercise.durationSeconds) {
-        _onTimerComplete();
+      if (exercise != null) {
+        _playCountdownForExercise(seconds, exercise);
+        if (seconds >= exercise.durationSeconds) {
+          _onTimerComplete();
+        }
       }
     });
-
-    ref.read(trainingSessionProvider.notifier).startWorkout();
   }
 
   @override
   void dispose() {
     _subscription.cancel();
     _timer.dispose();
+    _audioService.stop();
     super.dispose();
+  }
+
+  /// Play "准备开始 — [动作名称]" when entering exercise.
+  void _playExerciseStartPrompt() {
+    final settings = ref.read(settingsProvider);
+    if (!settings.voiceEnabled) return;
+    final exercise = ref.read(trainingSessionProvider).currentExercise;
+    if (exercise != null) {
+      _audioService.speak('准备开始 — ${exercise.name}');
+    }
+  }
+
+  /// Play countdown voice at the last 5 seconds, tick otherwise.
+  void _playCountdownForExercise(int elapsed, Exercise exercise) {
+    final remaining = exercise.durationSeconds - elapsed;
+    final settings = ref.read(settingsProvider);
+    if (remaining <= 5 && remaining > 0) {
+      if (settings.voiceEnabled) {
+        _audioService.speak('$remaining');
+      }
+    } else {
+      if (settings.soundEnabled) {
+        _audioService.playTick();
+      }
+    }
   }
 
   void _onTimerComplete() {
     final notifier = ref.read(trainingSessionProvider.notifier);
-    if (ref.read(trainingSessionProvider).isLastExercise) {
+    final session = ref.read(trainingSessionProvider);
+    final settings = ref.read(settingsProvider);
+
+    if (session.isLastExercise) {
+      if (settings.voiceEnabled) {
+        _audioService.speak('时间到！恭喜，训练完成！');
+      }
       notifier.completeWorkout();
     } else {
+      final exercise = session.currentExercise;
+      final restDuration = exercise?.restSeconds ?? 30;
+      if (settings.voiceEnabled) {
+        _audioService.speak('时间到！休息$restDuration秒');
+      }
       notifier.nextExercise();
     }
   }
@@ -123,6 +171,11 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                     isPaused: sessionState.isPaused,
                   ),
                   const SizedBox(height: 32),
+                  const Text(
+                    '当前动作',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
                   Text(
                     exercise.name,
                     style: const TextStyle(

@@ -1,13 +1,21 @@
 {
-  "commit": "b7fc95474f40102b91e6ef34f7a8071e709bc3eb",
+  "commit": "a0291798f0bf3112bf373ba4f86de5f1363d3db6",
   "branch": "master",
   "timestamp": "2026-05-17T11:30:00Z",
   "expires": "2026-05-17T12:30:00Z",
   "verdict": "APPROVED",
   "confidence": 8,
   "experts": [
-    { "id": "Expert A (Architecture)", "verdict": "APPROVED", "confidence": 8 },
-    { "id": "Expert B (Technical)", "verdict": "APPROVED", "confidence": 8 }
+    {
+      "id": "Expert A (Architecture)",
+      "verdict": "APPROVED",
+      "confidence": 8
+    },
+    {
+      "id": "Expert B (Technical)",
+      "verdict": "APPROVED",
+      "confidence": 8
+    }
   ],
   "issues": [
     {
