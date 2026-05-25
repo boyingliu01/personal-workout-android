@@ -63,13 +63,15 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   }
 
   /// Play "准备继续 — [下一个动作名称]" when rest starts.
+  /// NOTE: nextExercise() already advanced the index, so during rest
+  /// currentExercise IS the upcoming exercise (not the one after).
   void _playRestStartPrompt() {
     final settings = ref.read(settingsProvider);
     if (!settings.voiceEnabled) return;
     final session = ref.read(trainingSessionProvider);
-    final next = session.nextExercise;
-    if (next != null) {
-      _audioService.speak('准备继续 — ${next.name}');
+    final upcoming = session.currentExercise;
+    if (upcoming != null) {
+      _audioService.speak('准备继续 — ${upcoming.name}');
     }
   }
 
@@ -118,7 +120,9 @@ class _RestScreenState extends ConsumerState<RestScreen> {
     final restDuration = _getRestDuration();
     final remainingSeconds = restDuration - _elapsedSeconds;
     final progress = _elapsedSeconds / restDuration;
-    final nextExercise = sessionState.nextExercise;
+    // nextExercise() already advanced the index, so during rest
+    // currentExercise IS the upcoming exercise.
+    final upcomingExercise = sessionState.currentExercise;
 
     return Scaffold(
       appBar: AppBar(
@@ -140,8 +144,8 @@ class _RestScreenState extends ConsumerState<RestScreen> {
             progress: progress.clamp(0.0, 1.0),
           ),
           const SizedBox(height: 32),
-          if (nextExercise != null)
-            _NextExercisePreview(exercise: nextExercise)
+          if (upcomingExercise != null)
+            _NextExercisePreview(exercise: upcomingExercise)
           else
             const _LastExerciseMessage(),
           const Spacer(),
