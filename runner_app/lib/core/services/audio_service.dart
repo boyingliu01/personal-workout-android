@@ -16,8 +16,12 @@ class AudioService {
   bool get voiceEnabled => _voiceEnabled;
 
   /// Initialize TTS and preload tick sound.
-  Future<bool> preload() async {
+  /// [volume] and [voiceOn] are synced from settingsProvider so changes
+  /// in Settings immediately affect audio behavior.
+  Future<bool> preload({double? volume, bool? voiceOn}) async {
     try {
+      if (volume != null) _volume = volume;
+      if (voiceOn != null) _voiceEnabled = voiceOn;
       await _tts.setLanguage('zh-CN');
       await _tts.setSpeechRate(0.5);
       await _tts.setVolume(_volume);

@@ -27,7 +27,11 @@ class _RestScreenState extends ConsumerState<RestScreen> {
     super.initState();
 
     _audioService = ref.read(audioServiceProvider);
-    unawaited(_audioService.preload());
+    final settings = ref.read(settingsProvider);
+    unawaited(_audioService.preload(
+      volume: settings.volume,
+      voiceOn: settings.voiceEnabled,
+    ));
 
     _timer.start();
     _playRestStartPrompt();
@@ -52,7 +56,9 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   void dispose() {
     _subscription.cancel();
     _timer.dispose();
-    _audioService.stop();
+    // Don't call _audioService.stop() here - TrainingFlowScreen swaps widgets
+    // via state change (not Navigator), so dispose() triggers on every
+    // rest→exercise transition. Stopping TTS here kills ongoing audio.
     super.dispose();
   }
 
