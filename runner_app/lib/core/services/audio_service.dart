@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 /// Audio service for TTS voice prompts and tick sounds during training.
@@ -18,15 +19,26 @@ class AudioService {
   /// Initialize TTS and preload tick sound.
   /// [volume] and [voiceOn] are synced from settingsProvider so changes
   /// in Settings immediately affect audio behavior.
+  /// Returns false if the TTS engine is unavailable (e.g., zh-CN not installed).
   Future<bool> preload({double? volume, bool? voiceOn}) async {
     try {
       if (volume != null) _volume = volume;
       if (voiceOn != null) _voiceEnabled = voiceOn;
-      await _tts.setLanguage('zh-CN');
+
+      // Check setLanguage return value: Android returns false if the language
+      // is not supported by the installed TTS engine.
+      final langResult = await _tts.setLanguage('zh-CN');
+      if (langResult == false || langResult == null) {
+        debugPrint('[AudioService] ❌ zh-CN TTS engine unavailable. Audio disabled.');
+        return false;
+      }
+
       await _tts.setSpeechRate(0.5);
       await _tts.setVolume(_volume);
+      debugPrint('[AudioService] ✅ TTS initialized (zh-CN).');
       return true;
     } catch (e) {
+      debugPrint('[AudioService] TTS init failed: $e');
       return false;
     }
   }
