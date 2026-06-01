@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strength_app/core/services/audio_service.dart';
@@ -33,6 +34,13 @@ class _RestScreenState extends ConsumerState<RestScreen> {
       voiceOn: settings.voiceEnabled,
     ));
 
+    // DEBUG: Log state when RestScreen enters
+    final dbg = ref.read(trainingSessionProvider);
+    debugPrint('[RestScreen.initState] index=${dbg.currentExerciseIndex} '
+        'current=${dbg.currentExercise?.name} '
+        'next=${dbg.nextExercise?.name} '
+        'isLast=${dbg.isLastExercise}');
+
     _timer.start();
     _playRestStartPrompt();
 
@@ -63,12 +71,14 @@ class _RestScreenState extends ConsumerState<RestScreen> {
   }
 
   /// Play "准备继续 — [下一个动作名称]" when rest starts.
-  /// NOTE: nextExercise() already advanced the index, so during rest
-  /// currentExercise IS the upcoming exercise (not the one after).
   void _playRestStartPrompt() {
     final settings = ref.read(settingsProvider);
     if (!settings.voiceEnabled) return;
     final session = ref.read(trainingSessionProvider);
+    // DEBUG: Log what we're announcing
+    debugPrint('[RestScreen._playRestStartPrompt] '
+        'using currentExercise=${session.currentExercise?.name} '
+        'index=${session.currentExerciseIndex}');
     final upcoming = session.currentExercise;
     if (upcoming != null) {
       _audioService.speak('准备继续 — ${upcoming.name}');

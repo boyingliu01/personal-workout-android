@@ -33,6 +33,12 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
       voiceOn: settings.voiceEnabled,
     ));
 
+    // DEBUG
+    final state = ref.read(trainingSessionProvider);
+    debugPrint('[ExerciseScreen.initState] index=${state.currentExerciseIndex} '
+        'current=${state.currentExercise?.name} '
+        'next=${state.nextExercise?.name}');
+
     _timer.start();
     _playExerciseStartPrompt();
 
