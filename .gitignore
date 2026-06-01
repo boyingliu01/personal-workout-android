@@ -1,0 +1,27 @@
+# Flutter/Dart
+*.dart_tool/
+build/
+.packages
+pubspec.lock
+
+# IDE
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+
+# OpenCode / Omo tool state
+.omo/
+.opencode/
+opencode.json
+.sprint-state/
+
+# Windows Zone Identifiers (cross-WSL artifact)
+*:Zone.Identifier
+
+# Benchmark scripts (personal tooling)
+benchmark.sh
+benchmark_models.py
+
+# OS
+.DS_Store
+Thumbs.db
