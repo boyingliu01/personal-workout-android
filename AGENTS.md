@@ -1,138 +1,110 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-04-11
-**Commit:** e7c1a23
+**Generated:** 2026-06-01
+**Commit:** c15fd25
 **Branch:** master
 
 ## OVERVIEW
-Flutter Android development setup guide project. Documentation + scripts for WSL2 Ubuntu + Flutter SDK 3.27.4 + Android SDK. **No source code yet** - planning phase for Runner Training App (跑者训练APP).
+Flutter Android 跑者力量训练APP (strength_app). DDD分层架构: domain/entities → core/services → data/storage → presentation/screens+providers. State management via Riverpod StateNotifier, persistent storage via Hive.
 
 ## STRUCTURE
 ```
-sport-apk/                   # Flat structure - documentation only
-├── AGENTS.md                # This file - environment guide
-├── DESIGN.md                # App design (863 lines)
-├── PLAN.md                  # Implementation plan
-├── install_flutter.sh       # Automated SDK installer
-├── INSTALL_COMMANDS.md      # Quick reference
-├── MANUAL_INSTALL.md        # Step-by-step install
-├── VSCODE_WSL_SETUP.md      # VSCode + WSL2 setup
-└── DELPHI_CONSENSUS_REPORT.md # Consensus decisions
+sport-apk/
+├── runner_app/              # Active Flutter project (v2.0.0+1)
+│   ├── lib/
+│   │   ├── main.dart        # Entry: Hive init + ProviderScope + MaterialApp
+│   │   ├── domain/entities/ # Exercise, Workout, TrainingSession (pure Dart)
+│   │   ├── core/services/   # AudioService (TTS+tick), TimerService (Stream)
+│   │   ├── data/            # Hive datasources and repositories
+│   │   └── presentation/    # Providers, screens, models
+│   ├── test/unit/           # 8 unit tests + 1 widget test
+│   └── android/             # Android native config
+├── runner_app_old/          # Backup/previous iteration — IGNORE for new work
+├── SETUP_GUIDE.md           # Windows desktop migration guide
+├── DESIGN.md / PLAN.md      # Original design doc + implementation plan (historic)
+└── .github/ISSUES/          # Tracked issues (001, 002)
 ```
 
 ## WHERE TO LOOK
 | Task | Location | Notes |
 |------|----------|-------|
-| Setup environment | `install_flutter.sh` | Automated installer |
-| Manual install | `MANUAL_INSTALL.md` | Step-by-step guide |
-| App architecture | `DESIGN.md` | 863 lines, detailed UI/logic |
-| Implementation steps | `PLAN.md` | Feature breakdown |
-| Device debugging | `VSCODE_WSL_SETUP.md` | ADB over Network |
-| Quick commands | Below: Key Commands | Reference table |
+| App entry point | `runner_app/lib/main.dart` | Hive init → ProviderScope → StrengthApp |
+| Domain models | `runner_app/lib/domain/entities/` | Exercise, Workout, ExerciseLog, TrainingSession |
+| Workout state machine | `runner_app/lib/presentation/providers/training_session_provider.dart` | TrainingState + TrainingSessionNotifier: home → detail → exercising → resting → complete |
+| Audio (TTS + tick) | `runner_app/lib/core/services/audio_service.dart` | FlutterTts zh-CN + audioplayers tick.wav |
+| Timer | `runner_app/lib/core/services/timer_service.dart` | Stream-based, 1s tick |
+| Settings persistence | `runner_app/lib/presentation/providers/settings_provider.dart` | Hive box 'settings' |
+| Training history | `runner_app/lib/data/repositories/training_storage.dart` | Hive box 'sessions', JSON-encoded |
+| Exercise data | `runner_app/lib/core/constants/exercise_data.dart` | Hardcoded exercise list |
+| Screens | `runner_app/lib/presentation/screens/` | home → workout_detail → exercise → rest → complete |
+| Environment setup | `SETUP_GUIDE.md` | Windows desktop migration guide |
 
-## Environment Installation
-The environment is designed for Ubuntu 24.04.4 LTS on WSL2 with the following key installations:
-- Java JDK 17 (OpenJDK 17 - required for Android builds)
-- Flutter SDK 3.27.4 (latest stable for Android development)
-- Android SDK command-line tools, build-tools 34.0.0, platforms android-34
-- Supporting tools: git, curl, unzip, xz-utils, zip, libglu1-mesa, clang, cmake, ninja-build, pkg-config, libgtk-3-dev
+## CODE MAP
 
-## Shell Configuration
-- Uses Zsh shell by default (may also support bash)
-- Environment variables configured in `~/.zshrc` (or `~/.bashrc`):
-  - Flutter: `export PATH="$HOME/flutter/bin:$PATH"`
-  - China mirrors: `PUB_HOSTED_URL=https://pub.flutter-io.cn` and `FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn`
-  - Android: `ANDROID_HOME="$HOME/Android/Sdk"` and `ANDROID_SDK_ROOT="$ANDROID_HOME"`
-  - Android path: `"$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"` and `"$ANDROID_HOME/platform-tools:$PATH"`
-  - Java: `JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"` and `PATH="$PATH:$JAVA_HOME/bin"`
+| Symbol | Type | Location | Role |
+|--------|------|----------|------|
+| `StrengthApp` | Widget | main.dart | Root MaterialApp, orange seed color |
+| `TrainingState` | State class | training_session_provider.dart | Immutable UI state: screen, workout, index, paused |
+| `TrainingSessionNotifier` | StateNotifier | training_session_provider.dart | Workout lifecycle: select/start/next/complete |
+| `trainingSessionProvider` | StateNotifierProvider | training_session_provider.dart | Global workout state |
+| `AudioService` | Service class | audio_service.dart | TTS zh-CN + tick sound, mute/volume control |
+| `audioServiceProvider` | Provider | audio_provider.dart | Singleton AudioService, dispose on ref disposal |
+| `SettingsNotifier` | StateNotifier | settings_provider.dart | Hive-backed settings CRUD |
+| `AppSettings` | Model | settings_model.dart | volume, voiceEnabled, soundEnabled, exerciseDuration, restDuration, keepScreenOn |
+| `TimerService` | Service class | timer_service.dart | Stream<int> 1s tick, start/pause/resume/reset/stop |
+| `Exercise` | Entity | exercise.dart | name, durationSeconds, restSeconds, Difficulty, ExerciseCategory |
+| `Workout` | Entity | workout.dart | name, estimatedMinutes, List<Exercise> |
+| `TrainingSession` | Entity | training_session.dart | session log with ExerciseLog list |
 
-## Key Commands
-- Full environment check: `flutter doctor` and `flutter doctor -v`
-- Install licenses: `yes | flutter doctor --android-licenses`
-- Flutter version: `flutter --version`
-- ADB version: `adb version`
-- Create Flutter project: `flutter create project_name`
-- Run app: `flutter run` (for debug) or `flutter run -d <device_id>`
-- Build APK: `flutter build apk --debug` (dev) or `flutter build apk --release` (production)
-- Install APK: `adb install build/app/outputs/flutter-apk/app-release.apk`
-- Clean rebuild: `flutter clean && flutter pub get`
-- Run tests: `flutter test` and `flutter test --coverage`
-- Development: Hot reload: press 'r', Hot restart: press 'R'
-
-## Development Workflow
-- Use VSCode with Remote-WSL extension for development
-- Physical device debugging preferred via ADB over Network (recommended):
-  - Windows side: `adb tcpip 5555`
-  - WSL side: `export WINDOWS_HOST_IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')` followed by `adb connect $WINDOWS_HOST_IP:5555`
-- Alternative: Windows Android Emulator with network connection (start emulator in Windows, connect via ADB over Network)
-- Development flow: `flutter create` → `flutter pub get` → `flutter run` → hot reload with 'r'
-
-## Architecture Guidelines
-- State Management: Riverpod (recommended pattern)
-- Local Storage: Hive (NoSQL database, lightweight)
-- Video Playback: video_player package (official Flutter plugin)
-- Audio Feedback: audioplayers + flutter_tts (voice feedback and notifications)
-- Background Processing: flutter_background_service (if needed)
-- Screen On Protection: **wakelock_plus** (wakelock is deprecated)
-- UI Design: Follow Material Design principles (default Flutter)
+## CONVENTIONS
+- **Linter**: flutter_lints base + prefer_const_constructors, prefer_const_declarations, prefer_final_locals, avoid_print, prefer_single_quotes
+- **Language**: Screen UI text in Chinese (`'力量训练'`, `'准备开始'`, etc.)
+- **TTS language**: zh-CN (Chinese speech for training prompts)
+- **Color scheme**: Orange `#F5A623` as seed, Material 3
+- **Entity classes**: `const` constructors, immutable fields
+- **Service lifecycle**: `ref.onDispose()` pattern for resource cleanup
+- **No riverpod_generator used**: Providers hand-written, not codegen
 
 ## ANTI-PATTERNS (THIS PROJECT)
-- **DO NOT use `wakelock` package** - Use `wakelock_plus` instead (deprecated)
-- Always source shell config after environment changes
-- Always accept Android licenses after SDK installation
+- **DO NOT use `wakelock`** — use `wakelock_plus` (deprecated)
+- **DO NOT modify `runner_app_old/`** — it's a backup, work only in `runner_app/`
+- **DO NOT call `_audioService.stop()` in Dispose** — screens swap via state change, not Navigator; stopping TTS kills ongoing audio
+- **DO NOT suppress type errors** with `as any` or `@ts-ignore` equivalents
+- **DO NOT skip Hive init error handling** — main.dart catches HiveError and shows _AppErrorScreen
+- **Audio failures fail silently** — catch blocks continue silently, don't crash the screen
 
-## Common Issues and Solutions
-- License issues: Run `yes | flutter doctor --android-licenses` (always after initial setup)
-- ADB connectivity: Use ADB over Network method as detailed in workflow (most reliable in WSL2)
-- Build failures: Check environment variables are properly set in your shell configuration
-- Memory issues: Configure WSL2 memory limits via `.wslconfig` file and increase if needed
-- Gradle slow download: Use mirrors by configuring `~/.gradle/init.gradle` with maven.aliyun.com repositories
-- Chinese chars garbled: Set locale to zh_CN.UTF-8 with `export LANG=zh_CN.UTF-8` and `export LC_ALL=zh_CN.UTF-8`
-- Git performance: WSL2 generally has better Git performance than Windows
+## UNIQUE STYLES
+- **Screen state machine**: Single `TrainingSessionNotifier` drives all screen transitions (WorkoutScreen enum: home/detail/exercising/resting/complete)
+- **Widget-based screen switching**: Screens swapped inside TrainingFlowScreen via state, not route navigation (exercise↔rest transitions)
+- **TTS countdown**: Last 5 seconds use voice countdown ("5,4,3,2,1"), tick sound otherwise
+- **Settings-driven audio**: Settings change affects audio service preload on every screen init (not live-update)
 
-## Device Testing and Debugging
-- Physical device strongly preferred over emulators
-- Set up Android debugging on physical device with USB connection, then ADB over Network to WSL
-- Define helper function in `~/.bashrc`/`~/.zshrc` for device connection:
-  ```bash
-  connect_adb() {
-    export WINDOWS_HOST_IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
-    adb kill-server > /dev/null 2>&1
-    sleep 1
-    adb connect $WINDOWS_HOST_IP:5555
-    adb devices
-  }
-  ```
-- For simulator users: Start Android Studio simulator on Windows, then use ADB over Network
-- Use `flutter devices` and `adb devices` to verify device is detected
-- Debug logs with `flutter logs` and system logs with `adb logcat`
+## COMMANDS
 
-## Build and Release Process
-- For development: `flutter build apk --debug` (includes debugging capabilities)
-- For release: `flutter build apk --release` (optimized, signed APK)
-- For universal APK: `flutter build apk --release --split-per-abi`
-- Verify build: `flutter doctor` should show no Android issues
-- Install to device: `adb install <path-to-apk>`
+```bash
+cd runner_app
 
-## Testing and Quality Assurance
-- Unit tests: `flutter test` (for Dart code logic)
-- Widget tests: Built-in with Flutter testing capabilities
-- Integration tests: `flutter test integration_test/` (for end-to-end tests)
-- Build verification: Both `flutter build apk --debug` and `flutter build apk --release`
-- Device compatibility: Test with `flutter devices` and actual device run
-- Performance: Monitor with `flutter run --profile` 
+# Dependencies
+flutter pub get
+dart run build_runner build   # Not needed currently — no riverpod_generator
 
-## References to Detailed Documentation
-- Complete installation steps: `INSTALL_COMMANDS.md`
-- Automated install: `install_flutter.sh` script
-- Manual install: `MANUAL_INSTALL.md`
-- WSL+Flutter setup: `VSCODE_WSL_SETUP.md`
-- Planned app architecture: `DESIGN.md` and `PLAN.md`
+# Development
+flutter run                   # Run on connected device
+flutter run --profile         # Performance profiling
+
+# Testing
+flutter test                  # Run unit + widget tests (~9 tests)
+
+# Building
+flutter build apk --debug     # Debug APK
+flutter build apk --release   # Release APK
+flutter clean && flutter pub get  # Clean rebuild
+```
 
 ## NOTES
-- Always source `.zshrc` or `.bashrc` after environment variable changes: `source ~/.zshrc`
-- Must accept Android licenses after Android SDK installation
-- WSL2 requires special setup for physical device debugging (ADB over Network recommended)
-- This project is setup guides only - no actual Flutter source code initially
-- Gradle performance significantly affected without mirror configuration for Chinese users
-- Shell preference is Zsh, which may affect path configurations differently than bash
+- `runner_app_old/` is a previous iteration backup — ignore for development
+- Two Hive boxes: `'settings'` (user preferences) and `'sessions'` (training history)
+- Audio requires Android TTS engine with zh-CN language installed
+- Exercise data is hardcoded in `exercise_data.dart` — no API or remote data yet
+- Quality gates configured via `xp-gate` pre-commit hook (architecture gate requires `architecture.yaml`)
+- GitHub Issues tracked in `.github/ISSUES/` (not in GitHub repo, local markdown)
