@@ -1,8 +1,9 @@
 # runner_app/lib/presentation/screens/ — State Machine Screens
+**Generated:** 2026-06-04 | Commit: 9028321
 
 OVERVIEW: 7 screens driven by single `TrainingSessionNotifier` state machine. Screens swap as widgets via TrainingFlowScreen, not route navigation.
 
-SCREENS AND FLOW:
+## SCREENS AND FLOW
 
 ```
 HomeScreen → WorkoutDetailScreen → [ExerciseScreen ↔ RestScreen] → WorkoutCompleteScreen
