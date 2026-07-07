@@ -22,7 +22,9 @@ void main() {
       } on HiveError catch (e) {
         runApp(_AppErrorScreen(e.toString()));
         return;
-      }
+}
+
+// Quality gates verification marker
 
       runApp(
         const ProviderScope(child: StrengthApp()),

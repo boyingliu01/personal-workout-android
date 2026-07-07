@@ -1,0 +1,25 @@
+# Clean Architecture layer definitions for Flutter DDD project
+layers:
+  - name: domain
+    paths: ["lib/domain/**"]
+    allowed_imports: [domain]
+    
+  - name: core
+    paths: ["lib/core/**"]
+    allowed_imports: [domain, core]
+    
+  - name: data
+    paths: ["lib/data/**"]
+    allowed_imports: [domain, core, data]
+    
+  - name: presentation
+    paths: ["lib/presentation/**"]
+    allowed_imports: [domain, core, data, presentation]
+    
+  - name: main
+    paths: ["lib/main.dart"]
+    allowed_imports: [domain, core, data, presentation, main]
+    
+  - name: test
+    paths: ["test/**"]
+    allowed_imports: [domain, core, data, presentation, test]
