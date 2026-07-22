@@ -94,7 +94,7 @@ void main() {
                         .selectWorkout(workout);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<void>(
                         builder: (_) => const WorkoutDetailScreen(),
                       ),
                     );
@@ -130,7 +130,7 @@ void main() {
                         .selectWorkout(workout);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      MaterialPageRoute<void>(
                         builder: (_) => const WorkoutDetailScreen(),
                       ),
                     );

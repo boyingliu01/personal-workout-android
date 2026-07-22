@@ -3,17 +3,20 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:strength_app/presentation/models/settings_model.dart';
 
 class SettingsNotifier extends StateNotifier<AppSettings> {
-  final Box box;
+  final Box<dynamic> box;
 
   SettingsNotifier({required this.box})
-      : super(AppSettings(
-          volume: box.get('volume', defaultValue: 0.8) as double,
-          voiceEnabled: box.get('voiceEnabled', defaultValue: true) as bool,
-          soundEnabled: box.get('soundEnabled', defaultValue: true) as bool,
-          exerciseDuration: box.get('exerciseDuration', defaultValue: 60) as int,
-          restDuration: box.get('restDuration', defaultValue: 5) as int,
-          keepScreenOn: box.get('keepScreenOn', defaultValue: true) as bool,
-        ));
+      : super(
+          AppSettings(
+            volume: box.get('volume', defaultValue: 0.8) as double,
+            voiceEnabled: box.get('voiceEnabled', defaultValue: true) as bool,
+            soundEnabled: box.get('soundEnabled', defaultValue: true) as bool,
+            exerciseDuration:
+                box.get('exerciseDuration', defaultValue: 60) as int,
+            restDuration: box.get('restDuration', defaultValue: 5) as int,
+            keepScreenOn: box.get('keepScreenOn', defaultValue: true) as bool,
+          ),
+        );
 
   Future<void> setVolume(double v) async {
     await box.put('volume', v);

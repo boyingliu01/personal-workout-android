@@ -17,7 +17,7 @@ abstract class SettingsStorage {
 }
 
 class HiveSettingsStorage implements SettingsStorage {
-  final Box box;
+  final Box<dynamic> box;
 
   HiveSettingsStorage({required this.box});
 
@@ -31,7 +31,8 @@ class HiveSettingsStorage implements SettingsStorage {
   bool get soundEnabled => box.get('soundEnabled', defaultValue: true) as bool;
 
   @override
-  int get exerciseDuration => box.get('exerciseDuration', defaultValue: 60) as int;
+  int get exerciseDuration =>
+      box.get('exerciseDuration', defaultValue: 60) as int;
 
   @override
   int get restDuration => box.get('restDuration', defaultValue: 5) as int;
@@ -43,17 +44,22 @@ class HiveSettingsStorage implements SettingsStorage {
   Future<void> setVolume(double value) async => box.put('volume', value);
 
   @override
-  Future<void> setVoiceEnabled(bool value) async => box.put('voiceEnabled', value);
+  Future<void> setVoiceEnabled(bool value) async =>
+      box.put('voiceEnabled', value);
 
   @override
-  Future<void> setSoundEnabled(bool value) async => box.put('soundEnabled', value);
+  Future<void> setSoundEnabled(bool value) async =>
+      box.put('soundEnabled', value);
 
   @override
-  Future<void> setExerciseDuration(int value) async => box.put('exerciseDuration', value);
+  Future<void> setExerciseDuration(int value) async =>
+      box.put('exerciseDuration', value);
 
   @override
-  Future<void> setRestDuration(int value) async => box.put('restDuration', value);
+  Future<void> setRestDuration(int value) async =>
+      box.put('restDuration', value);
 
   @override
-  Future<void> setKeepScreenOn(bool value) async => box.put('keepScreenOn', value);
+  Future<void> setKeepScreenOn(bool value) async =>
+      box.put('keepScreenOn', value);
 }

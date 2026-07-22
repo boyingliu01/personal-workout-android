@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strength_app/core/constants/exercise_data.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
+import 'package:strength_app/presentation/screens/history_screen.dart';
 import 'package:strength_app/presentation/screens/settings_screen.dart';
 import 'package:strength_app/presentation/screens/workout_detail_screen.dart';
 
@@ -13,7 +14,22 @@ class HomeScreen extends ConsumerWidget {
     final workouts = ExerciseData.allWorkouts;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('力量训练')),
+      appBar: AppBar(
+        title: const Text('力量训练'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const HistoryScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: workouts.length + 1,
@@ -30,7 +46,9 @@ class HomeScreen extends ConsumerWidget {
               ref.read(trainingSessionProvider.notifier).selectWorkout(workout);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const WorkoutDetailScreen()),
+                MaterialPageRoute<void>(
+                  builder: (_) => const WorkoutDetailScreen(),
+                ),
               );
             },
           );
@@ -40,7 +58,7 @@ class HomeScreen extends ConsumerWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
           );
         },
         child: const Icon(Icons.settings),
@@ -94,8 +112,15 @@ class _WorkoutCard extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: onTap,
-        leading: const Icon(Icons.fitness_center, size: 32, color: Color(0xFFF5A623)),
-        title: Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        leading: const Icon(
+          Icons.fitness_center,
+          size: 32,
+          color: Color(0xFFF5A623),
+        ),
+        title: Text(
+          name,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
         subtitle: Text('$count个动作 · 约$duration分钟'),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       ),

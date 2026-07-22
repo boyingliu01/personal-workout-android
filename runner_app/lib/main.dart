@@ -17,12 +17,12 @@ void main() {
 
       try {
         await Hive.initFlutter();
-        await Hive.openBox('settings');
-        await Hive.openBox('sessions');
+        await Hive.openBox<dynamic>('settings');
+        await Hive.openBox<String>('sessions');
       } on HiveError catch (e) {
         runApp(_AppErrorScreen(e.toString()));
         return;
-}
+      }
 
 // Quality gates verification marker
 
@@ -46,7 +46,6 @@ class StrengthApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFF5A623),
-          brightness: Brightness.light,
         ),
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF8F9FA),
@@ -74,12 +73,16 @@ class _AppErrorScreen extends StatelessWidget {
               children: [
                 const Icon(Icons.error_outline, color: Colors.red, size: 64),
                 const SizedBox(height: 24),
-                const Text('初始化失败',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const Text(
+                  '初始化失败',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 16),
-                Text(errorMessage,
-                    style: const TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center),
+                Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),

@@ -101,5 +101,80 @@ class ExerciseData {
     ],
   );
 
-  static List<Workout> get allWorkouts => [legsWorkout];
+  static const Workout coreWorkout = Workout(
+    id: 'core',
+    name: '核心训练',
+    description: '增强躯干稳定性，提升跑步姿态控制',
+    estimatedMinutes: 12,
+    exercises: [
+      Exercise(
+        id: 'plank',
+        name: '平板支撑',
+        description: '前臂撑地，身体保持一条直线，收紧腹部',
+        imagePath: '',
+        durationSeconds: 45,
+        restSeconds: 15,
+        targetMuscles: ['核心', '肩部'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.core,
+      ),
+      Exercise(
+        id: 'side_plank',
+        name: '侧平板支撑',
+        description: '单侧前臂撑地，身体侧面保持一条直线',
+        imagePath: '',
+        durationSeconds: 30,
+        restSeconds: 15,
+        targetMuscles: ['核心', '腰部'],
+        difficulty: Difficulty.intermediate,
+        category: ExerciseCategory.core,
+      ),
+      Exercise(
+        id: 'dead_bug',
+        name: '死虫式',
+        description: '仰卧，双臂伸向天花板，双腿抬起呈90度，交替伸展',
+        imagePath: '',
+        durationSeconds: 45,
+        restSeconds: 15,
+        targetMuscles: ['核心', '髋屈肌'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.core,
+      ),
+      Exercise(
+        id: 'bird_dog',
+        name: '鸟狗式',
+        description: '四点跪姿，同时伸展对侧手臂和腿，保持平衡',
+        imagePath: '',
+        durationSeconds: 45,
+        restSeconds: 15,
+        targetMuscles: ['核心', '臀部', '背部'],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.core,
+      ),
+      Exercise(
+        id: 'mountain_climber',
+        name: '登山者',
+        description: '俯卧撑姿势，交替将膝盖拉向胸部',
+        imagePath: '',
+        durationSeconds: 30,
+        restSeconds: 15,
+        targetMuscles: ['核心', '肩部', '腿部'],
+        difficulty: Difficulty.intermediate,
+        category: ExerciseCategory.core,
+      ),
+      Exercise(
+        id: 'russian_twist',
+        name: '俄罗斯转体',
+        description: '坐姿，双脚离地，上半身左右旋转',
+        imagePath: '',
+        durationSeconds: 45,
+        restSeconds: 15,
+        targetMuscles: ['核心', '腰部'],
+        difficulty: Difficulty.intermediate,
+        category: ExerciseCategory.core,
+      ),
+    ],
+  );
+
+  static List<Workout> get allWorkouts => [legsWorkout, coreWorkout];
 }

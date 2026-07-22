@@ -40,8 +40,11 @@ void main() {
 
     test('selectWorkout sets detail screen', () {
       const workout = Workout(
-        id: 'legs', name: 'Test', description: '',
-        estimatedMinutes: 10, exercises: [],
+        id: 'legs',
+        name: 'Test',
+        description: '',
+        estimatedMinutes: 10,
+        exercises: [],
       );
       notifier.selectWorkout(workout);
       final state = container.read(trainingSessionProvider);
@@ -74,50 +77,86 @@ void main() {
 
     test('currentExercise with workout', () {
       const exercise = Exercise(
-        id: 'squat', name: '深蹲', description: '',
-        imagePath: '', durationSeconds: 60, restSeconds: 5,
-        targetMuscles: [], difficulty: Difficulty.beginner,
+        id: 'squat',
+        name: '深蹲',
+        description: '',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
         category: ExerciseCategory.legs,
       );
       const workout = Workout(
-        id: 'legs', name: '', description: '',
-        estimatedMinutes: 1, exercises: [exercise],
+        id: 'legs',
+        name: '',
+        description: '',
+        estimatedMinutes: 1,
+        exercises: [exercise],
       );
       notifier.selectWorkout(workout);
       notifier.startWorkout();
 
-      expect(container.read(trainingSessionProvider).currentExercise?.id, 'squat');
+      expect(
+        container.read(trainingSessionProvider).currentExercise?.id,
+        'squat',
+      );
     });
 
-    test('after nextExercise during rest, currentExercise is the upcoming one', () {
+    test('after nextExercise during rest, currentExercise is the upcoming one',
+        () {
       const ex1 = Exercise(
-        id: 'squat', name: '深蹲', description: '',
-        imagePath: '', durationSeconds: 60, restSeconds: 5,
-        targetMuscles: [], difficulty: Difficulty.beginner,
+        id: 'squat',
+        name: '深蹲',
+        description: '',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
         category: ExerciseCategory.legs,
       );
       const ex2 = Exercise(
-        id: 'plank', name: '平板支撑', description: '',
-        imagePath: '', durationSeconds: 30, restSeconds: 5,
-        targetMuscles: [], difficulty: Difficulty.beginner,
+        id: 'plank',
+        name: '平板支撑',
+        description: '',
+        imagePath: '',
+        durationSeconds: 30,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
         category: ExerciseCategory.core,
       );
       const ex3 = Exercise(
-        id: 'lunge', name: '弓步', description: '',
-        imagePath: '', durationSeconds: 45, restSeconds: 5,
-        targetMuscles: [], difficulty: Difficulty.beginner,
+        id: 'lunge',
+        name: '弓步',
+        description: '',
+        imagePath: '',
+        durationSeconds: 45,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
         category: ExerciseCategory.legs,
       );
       const workout = Workout(
-        id: 'legs', name: 'Leg Day', description: '',
-        estimatedMinutes: 3, exercises: [ex1, ex2, ex3],
+        id: 'legs',
+        name: 'Leg Day',
+        description: '',
+        estimatedMinutes: 3,
+        exercises: [ex1, ex2, ex3],
       );
       notifier.selectWorkout(workout);
       notifier.startWorkout();
 
       // Start: index 0, doing squat
-      expect(container.read(trainingSessionProvider).currentExercise?.id, 'squat');
-      expect(container.read(trainingSessionProvider).screen, WorkoutScreen.exercising);
+      expect(
+        container.read(trainingSessionProvider).currentExercise?.id,
+        'squat',
+      );
+      expect(
+        container.read(trainingSessionProvider).screen,
+        WorkoutScreen.exercising,
+      );
 
       // User skips squat → enters rest for plank
       notifier.nextExercise();
@@ -132,7 +171,10 @@ void main() {
       // RestScreen was using nextExercise (index+1=2=lunge) but should use
       // currentExercise (index=1=plank).
       expect(restingState.currentExercise?.id, 'plank');
-      expect(restingState.nextExercise?.id, 'lunge'); // nextExercise shows lunge (WRONG for RestScreen)
+      expect(
+        restingState.nextExercise?.id,
+        'lunge',
+      ); // nextExercise shows lunge (WRONG for RestScreen)
     });
   });
 }

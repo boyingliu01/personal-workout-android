@@ -18,13 +18,15 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('语音提示'),
             subtitle: const Text('训练时语音播报动作名称'),
             value: settings.voiceEnabled,
-            onChanged: (v) => ref.read(settingsProvider.notifier).setVoiceEnabled(v),
+            onChanged: (v) =>
+                ref.read(settingsProvider.notifier).setVoiceEnabled(v),
           ),
           SwitchListTile(
             title: const Text('提示音'),
             subtitle: const Text('每秒beep提示音'),
             value: settings.soundEnabled,
-            onChanged: (v) => ref.read(settingsProvider.notifier).setSoundEnabled(v),
+            onChanged: (v) =>
+                ref.read(settingsProvider.notifier).setSoundEnabled(v),
           ),
           ListTile(
             title: const Text('音量'),
@@ -33,7 +35,8 @@ class SettingsScreen extends ConsumerWidget {
               width: 150,
               child: Slider(
                 value: settings.volume,
-                onChanged: (v) => ref.read(settingsProvider.notifier).setVolume(v),
+                onChanged: (v) =>
+                    ref.read(settingsProvider.notifier).setVolume(v),
               ),
             ),
           ),
@@ -43,7 +46,8 @@ class SettingsScreen extends ConsumerWidget {
             subtitle: const Text('训练时保持屏幕开启'),
             trailing: Switch(
               value: settings.keepScreenOn,
-              onChanged: (v) => ref.read(settingsProvider.notifier).setKeepScreenOn(v),
+              onChanged: (v) =>
+                  ref.read(settingsProvider.notifier).setKeepScreenOn(v),
             ),
           ),
         ],
@@ -60,7 +64,10 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+      child: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+      ),
     );
   }
 }

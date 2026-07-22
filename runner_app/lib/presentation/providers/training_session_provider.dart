@@ -20,10 +20,10 @@ class TrainingState {
     this.completedSession,
   });
 
-  Exercise? get currentExercise =>
-      currentWorkout != null && currentExerciseIndex < currentWorkout!.exercises.length
-          ? currentWorkout!.exercises[currentExerciseIndex]
-          : null;
+  Exercise? get currentExercise => currentWorkout != null &&
+          currentExerciseIndex < currentWorkout!.exercises.length
+      ? currentWorkout!.exercises[currentExerciseIndex]
+      : null;
 
   Exercise? get nextExercise {
     if (currentWorkout == null) return null;
@@ -86,7 +86,8 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
   }
 
   void nextExercise() {
-    if (state.currentExerciseIndex >= (state.currentWorkout?.exercises.length ?? 0) - 1) {
+    if (state.currentExerciseIndex >=
+        (state.currentWorkout?.exercises.length ?? 0) - 1) {
       completeWorkout();
       return;
     }
@@ -113,12 +114,14 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
       totalExercises: workout.exercises.length,
       totalSeconds: workout.totalDurationSeconds,
       exerciseLogs: workout.exercises
-          .map((e) => ExerciseLog(
-                exerciseId: e.id,
-                exerciseName: e.name,
-                actualSeconds: e.durationSeconds,
-                completed: true,
-              ))
+          .map(
+            (e) => ExerciseLog(
+              exerciseId: e.id,
+              exerciseName: e.name,
+              actualSeconds: e.durationSeconds,
+              completed: true,
+            ),
+          )
           .toList(),
     );
 

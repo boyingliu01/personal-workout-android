@@ -165,3 +165,26 @@ flutter:
 - `flutter_tts` 在 Android 上的兼容性问题（Kotlin 版本？compileSdk 版本？）
 
 **下一步**: 需要真机日志（`flutter logs` 或 `adb logcat`）确认 TTS 初始化是否成功，以及音频调用的具体报错。
+
+### 2026-07-23 Sprint 3 代码清理完成
+- 移除调试日志（exercise_screen、rest_screen 中的 debugPrint）
+- 保留 audio_service 中的错误路径日志（用于真机诊断）
+- 代码状态：80 个测试通过，flutter analyze 无问题
+- **状态**: 待真机验收
+
+### 真机验收步骤
+1. 连接 Android 真机（USB 或无线调试）
+2. 运行 `flutter logs` 启动日志监控
+3. 执行以下操作并记录结果：
+   - 进入训练 → 应听到"准备开始 — [动作名称]"
+   - 等待倒计时最后 5 秒 → 应听到"5, 4, 3, 2, 1"
+   - 动作结束 → 应听到"时间到！休息X秒"
+   - 休息最后 3 秒 → 应听到"3, 2, 1"
+   - 检查每秒是否有嘀嗒声
+4. 在 Settings 中测试：
+   - 关闭"语音开关" → 应无 TTS 播报
+   - 关闭"声音开关" → 应无嘀嗒声
+   - 调整音量滑块 → 音量应变化
+5. 查看 `flutter logs` 输出，确认：
+   - `[AudioService] ✅ TTS initialized (zh-CN)` 出现
+   - 无错误日志

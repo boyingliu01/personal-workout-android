@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/core/constants/exercise_icons.dart';
 import 'package:strength_app/core/services/audio_service.dart';
 import 'package:strength_app/core/services/timer_service.dart';
 import 'package:strength_app/domain/entities/exercise.dart';
@@ -28,16 +29,12 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
 
     _audioService = ref.read(audioServiceProvider);
     final settings = ref.read(settingsProvider);
-    unawaited(_audioService.preload(
-      volume: settings.volume,
-      voiceOn: settings.voiceEnabled,
-    ));
-
-    // DEBUG
-    final state = ref.read(trainingSessionProvider);
-    debugPrint('[ExerciseScreen.initState] index=${state.currentExerciseIndex} '
-        'current=${state.currentExercise?.name} '
-        'next=${state.nextExercise?.name}');
+    unawaited(
+      _audioService.preload(
+        volume: settings.volume,
+        voiceOn: settings.voiceEnabled,
+      ),
+    );
 
     _timer.start();
     _playExerciseStartPrompt();
@@ -186,6 +183,12 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                   const Text(
                     '当前动作',
                     style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
+                  Icon(
+                    iconForExercise(exercise),
+                    size: 48,
+                    color: const Color(0xFFF5A623),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -371,7 +374,10 @@ class ExerciseControls extends StatelessWidget {
                 label: Text(isPaused ? '继续' : '暂停'),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -384,7 +390,10 @@ class ExerciseControls extends StatelessWidget {
                   label: const Text('跳过'),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),

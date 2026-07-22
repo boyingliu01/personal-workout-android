@@ -23,13 +23,40 @@ void main() {
       }
     });
 
-    test('total exercise count', () {
-      expect(ExerciseData.allWorkouts.length, 1);
+    test('allWorkouts contains legs and core', () {
+      expect(ExerciseData.allWorkouts.length, 2);
+      expect(ExerciseData.allWorkouts[0].id, 'legs');
+      expect(ExerciseData.allWorkouts[1].id, 'core');
     });
 
     test('each exercise is category legs', () {
       for (final exercise in ExerciseData.legsWorkout.exercises) {
         expect(exercise.category, ExerciseCategory.legs);
+      }
+    });
+
+    test('coreWorkout has 6 exercises', () {
+      expect(ExerciseData.coreWorkout.exercises.length, 6);
+    });
+
+    test('coreWorkout id and name', () {
+      expect(ExerciseData.coreWorkout.id, 'core');
+      expect(ExerciseData.coreWorkout.name, '核心训练');
+    });
+
+    test('core exercises have non-empty fields', () {
+      for (final exercise in ExerciseData.coreWorkout.exercises) {
+        expect(exercise.id.isNotEmpty, isTrue);
+        expect(exercise.name.isNotEmpty, isTrue);
+        expect(exercise.description.isNotEmpty, isTrue);
+        expect(exercise.durationSeconds, greaterThan(0));
+        expect(exercise.targetMuscles.isNotEmpty, isTrue);
+      }
+    });
+
+    test('each core exercise is category core', () {
+      for (final exercise in ExerciseData.coreWorkout.exercises) {
+        expect(exercise.category, ExerciseCategory.core);
       }
     });
   });

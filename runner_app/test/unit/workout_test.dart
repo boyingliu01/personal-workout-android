@@ -3,9 +3,14 @@ import 'package:strength_app/domain/entities/exercise.dart';
 import 'package:strength_app/domain/entities/workout.dart';
 
 const _exercise = Exercise(
-  id: 'squat', name: '深蹲', description: '', imagePath: '',
-  durationSeconds: 60, restSeconds: 5,
-  targetMuscles: [], difficulty: Difficulty.beginner,
+  id: 'squat',
+  name: '深蹲',
+  description: '',
+  imagePath: '',
+  durationSeconds: 60,
+  restSeconds: 5,
+  targetMuscles: [],
+  difficulty: Difficulty.beginner,
   category: ExerciseCategory.legs,
 );
 
@@ -29,7 +34,9 @@ void main() {
 
     test('calculates total duration from exercises', () {
       const w = Workout(
-        id: 'test', name: 'test', description: '',
+        id: 'test',
+        name: 'test',
+        description: '',
         estimatedMinutes: 0,
         exercises: [_exercise, _exercise],
       );

@@ -58,9 +58,14 @@ void main() {
       expect(session.completionRate, 1.0);
 
       final partial = TrainingSession(
-        id: 'partial', workoutId: 'legs', workoutName: '',
-        startTime: now, completedExercises: 4, totalExercises: 8,
-        totalSeconds: 450, exerciseLogs: [],
+        id: 'partial',
+        workoutId: 'legs',
+        workoutName: '',
+        startTime: now,
+        completedExercises: 4,
+        totalExercises: 8,
+        totalSeconds: 450,
+        exerciseLogs: [],
       );
       expect(partial.completionRate, 0.5);
     });

@@ -60,7 +60,7 @@ architecture:
 
   coreServices:
     timerService: "Stream-based countdown timer"
-    audioService: "Volume/mute/voice controls (stubs)"
+    audioService: "TTS zh-CN voice prompts + tick sound via audioplayers"
 
   navigation:
     - "Simple Navigator.push/pop"
@@ -157,6 +157,4 @@ testing:
   status: "59/59 passing"
 
 knownIssues:
-  - "AudioService uses stub implementations (TTS/video not yet integrated)"
   - "No actual exercise images (placeholder icons only)"
-  - "No session history screen implemented yet"

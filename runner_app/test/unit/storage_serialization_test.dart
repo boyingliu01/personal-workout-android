@@ -18,7 +18,7 @@ void main() {
         'completedExercises': 8,
         'totalExercises': 8,
         'totalSeconds': 900,
-        'exerciseLogs': [],
+        'exerciseLogs': <dynamic>[],
       });
 
       // Test decode
@@ -40,7 +40,7 @@ void main() {
         'completedExercises': 0,
         'totalExercises': 8,
         'totalSeconds': 0,
-        'exerciseLogs': [],
+        'exerciseLogs': <dynamic>[],
       };
 
       final json = jsonEncode(data);

@@ -70,7 +70,7 @@ void main() {
 
   group('TimerService - stream', () {
     test('emits tick events', () {
-      service.start(from: 0);
+      service.start();
       expect(service.seconds, 0);
       service.dispose();
     });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/core/constants/exercise_icons.dart';
 import 'package:strength_app/domain/entities/exercise.dart';
 import 'package:strength_app/domain/entities/workout.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
@@ -156,12 +157,10 @@ class _ExerciseListItem extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: const Color(0xFFF5A623).withValues(alpha: 0.2),
-          child: Text(
-            '$index',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFF5A623),
-            ),
+          child: Icon(
+            iconForExercise(exercise),
+            color: const Color(0xFFF5A623),
+            size: 20,
           ),
         ),
         title: Text(exercise.name),
@@ -191,14 +190,17 @@ class _StartButton extends ConsumerWidget {
               ref.read(trainingSessionProvider.notifier).startWorkout();
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const TrainingFlowScreen()),
+                MaterialPageRoute<void>(
+                  builder: (_) => const TrainingFlowScreen(),
+                ),
               );
             },
             icon: const Icon(Icons.play_arrow),
             label: const Text('开始训练'),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              textStyle:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
         ),

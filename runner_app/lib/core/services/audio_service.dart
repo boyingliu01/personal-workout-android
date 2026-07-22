@@ -6,8 +6,12 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 /// Audio service for TTS voice prompts and tick sounds during training.
 class AudioService {
-  final FlutterTts _tts = FlutterTts();
-  final AudioPlayer _player = AudioPlayer();
+  final FlutterTts _tts;
+  final AudioPlayer _player;
+
+  AudioService({FlutterTts? tts, AudioPlayer? player})
+      : _tts = tts ?? FlutterTts(),
+        _player = player ?? AudioPlayer();
   double _volume = 0.8;
   bool _muted = false;
   bool _voiceEnabled = true;
@@ -29,13 +33,14 @@ class AudioService {
       // is not supported by the installed TTS engine.
       final langResult = await _tts.setLanguage('zh-CN');
       if (langResult == false || langResult == null) {
-        debugPrint('[AudioService] ❌ zh-CN TTS engine unavailable. Audio disabled.');
+        debugPrint(
+          '[AudioService] ❌ zh-CN TTS engine unavailable. Audio disabled.',
+        );
         return false;
       }
 
       await _tts.setSpeechRate(0.5);
       await _tts.setVolume(_volume);
-      debugPrint('[AudioService] ✅ TTS initialized (zh-CN).');
       return true;
     } catch (e) {
       debugPrint('[AudioService] TTS init failed: $e');
@@ -61,8 +66,7 @@ class AudioService {
   Future<void> playTick() async {
     if (_muted) return;
     try {
-      await _player.play(AssetSource('audio/tick.wav'),
-          volume: _volume * 0.3);
+      await _player.play(AssetSource('audio/tick.wav'), volume: _volume * 0.3);
     } catch (e) {
       // Tick sound failed, continue silently
     }

@@ -22,7 +22,7 @@ void main() {
   });
 
   group('Exercise', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'squat',
       name: '深蹲',
       description: '双脚与肩同宽，膝盖弯曲',

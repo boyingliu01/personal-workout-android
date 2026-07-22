@@ -13,8 +13,7 @@ class WorkoutCompleteScreen extends ConsumerStatefulWidget {
       _WorkoutCompleteScreenState();
 }
 
-class _WorkoutCompleteScreenState
-    extends ConsumerState<WorkoutCompleteScreen> {
+class _WorkoutCompleteScreenState extends ConsumerState<WorkoutCompleteScreen> {
   bool _saved = false;
 
   @override
@@ -105,7 +104,10 @@ class _StatCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label, style: const TextStyle(fontSize: 16)),
-            Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
