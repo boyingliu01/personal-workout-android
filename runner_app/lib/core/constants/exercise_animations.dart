@@ -42,4 +42,17 @@ const _exerciseAnimationMap = <String, String>{
   'clean_and_press': 'assets/animations/squat_jump.gif', // Using squat jump as fallback
   'man_maker': 'assets/animations/man_maker.gif', // Using burpee as temporary fallback
   'jumping_jack': 'assets/animations/jumping_jack.gif',
+  // Warmup
+  'warmup_jumping_jack': 'assets/animations/jumping_jack.gif',
+  'high_knees': 'assets/animations/squat_jump.gif', // Using squat jump as fallback
+  'butt_kicks': 'assets/animations/lunge.gif', // Using lunge as fallback
+  'grapevine': 'assets/animations/side_lunge.gif', // Using side lunge as fallback
+  'lunge_with_twist': 'assets/animations/lunge.gif', // Using lunge as fallback
+  'front_leg_swings': 'assets/animations/single_leg_deadlift.gif', // Using single leg deadlift as fallback
+  'side_leg_swings': 'assets/animations/side_lunge.gif', // Using side lunge as fallback
+  'hip_circles': 'assets/animations/squat.gif', // Using squat as fallback
+  'worlds_greatest_stretch': 'assets/animations/lunge.gif', // Using lunge as fallback
+  'calf_walks': 'assets/animations/calf_raise.gif', // Using calf raise as fallback
+  'arm_circles': 'assets/animations/lateral_raise.gif', // Using lateral raise as fallback
+  'torso_twists': 'assets/animations/russian_twist.gif', // Using russian twist as fallback
 };

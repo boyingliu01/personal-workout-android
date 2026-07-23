@@ -13,6 +13,8 @@ IconData _categoryIcon(ExerciseCategory category) {
     ExerciseCategory.core => Icons.self_improvement,
     ExerciseCategory.upperBody => Icons.accessibility_new,
     ExerciseCategory.fullBody => Icons.sports_gymnastics,
+    ExerciseCategory.warmup => Icons.whatshot,
+    ExerciseCategory.stretch => Icons.self_improvement,
   };
 }
 

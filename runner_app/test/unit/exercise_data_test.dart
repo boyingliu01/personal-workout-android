@@ -23,12 +23,13 @@ void main() {
       }
     });
 
-    test('allWorkouts contains all 4 workouts', () {
-      expect(ExerciseData.allWorkouts.length, 4);
-      expect(ExerciseData.allWorkouts[0].id, 'legs');
-      expect(ExerciseData.allWorkouts[1].id, 'core');
-      expect(ExerciseData.allWorkouts[2].id, 'upper_body');
-      expect(ExerciseData.allWorkouts[3].id, 'full_body');
+    test('allWorkouts contains all 5 workouts', () {
+      expect(ExerciseData.allWorkouts.length, 5);
+      expect(ExerciseData.allWorkouts[0].id, 'warmup');
+      expect(ExerciseData.allWorkouts[1].id, 'legs');
+      expect(ExerciseData.allWorkouts[2].id, 'core');
+      expect(ExerciseData.allWorkouts[3].id, 'upper_body');
+      expect(ExerciseData.allWorkouts[4].id, 'full_body');
     });
 
     test('each exercise is category legs', () {
@@ -109,6 +110,31 @@ void main() {
     test('each full body exercise is category fullBody', () {
       for (final exercise in ExerciseData.fullBodyWorkout.exercises) {
         expect(exercise.category, ExerciseCategory.fullBody);
+      }
+    });
+
+    test('warmupWorkout has 12 exercises', () {
+      expect(ExerciseData.warmupWorkout.exercises.length, 12);
+    });
+
+    test('warmupWorkout id and name', () {
+      expect(ExerciseData.warmupWorkout.id, 'warmup');
+      expect(ExerciseData.warmupWorkout.name, '跑前热身');
+    });
+
+    test('warmup exercises have non-empty fields', () {
+      for (final exercise in ExerciseData.warmupWorkout.exercises) {
+        expect(exercise.id.isNotEmpty, isTrue);
+        expect(exercise.name.isNotEmpty, isTrue);
+        expect(exercise.description.isNotEmpty, isTrue);
+        expect(exercise.durationSeconds, greaterThan(0));
+        expect(exercise.targetMuscles.isNotEmpty, isTrue);
+      }
+    });
+
+    test('each warmup exercise is category warmup', () {
+      for (final exercise in ExerciseData.warmupWorkout.exercises) {
+        expect(exercise.category, ExerciseCategory.warmup);
       }
     });
   });

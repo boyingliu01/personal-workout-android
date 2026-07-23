@@ -12,12 +12,14 @@ void main() {
   });
 
   group('ExerciseCategory', () {
-    test('has four values', () {
-      expect(ExerciseCategory.values.length, 4);
+    test('has six values', () {
+      expect(ExerciseCategory.values.length, 6);
       expect(ExerciseCategory.values, contains(ExerciseCategory.legs));
       expect(ExerciseCategory.values, contains(ExerciseCategory.core));
       expect(ExerciseCategory.values, contains(ExerciseCategory.upperBody));
       expect(ExerciseCategory.values, contains(ExerciseCategory.fullBody));
+      expect(ExerciseCategory.values, contains(ExerciseCategory.warmup));
+      expect(ExerciseCategory.values, contains(ExerciseCategory.stretch));
     });
   });
 

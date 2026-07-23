@@ -1,6 +1,6 @@
 enum Difficulty { beginner, intermediate, advanced }
 
-enum ExerciseCategory { legs, core, upperBody, fullBody }
+enum ExerciseCategory { legs, core, upperBody, fullBody, warmup, stretch }
 
 class Exercise {
   final String id;
