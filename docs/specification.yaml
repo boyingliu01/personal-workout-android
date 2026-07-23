@@ -109,6 +109,19 @@ dataModel:
       - actualSeconds
       - completed
 
+trainingScenario:
+  context: "家庭训练，无健身房器械"
+  allowedEquipment:
+    - "徒手训练（bodyweight）"
+    - "哑铃（dumbbell）"
+    - "沙发/椅子（辅助动作如保加利亚分腿蹲）"
+  prohibitedEquipment:
+    - "腿举机"
+    - "史密斯机"
+    - "引体向上杆"
+    - "其他健身房专用器械"
+  constraint: "所有动作必须能在家完成"
+
 hardcodedExercises:
   name: "Legs Workout"
   count: 8

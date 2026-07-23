@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/core/constants/exercise_animations.dart';
 import 'package:strength_app/core/constants/exercise_icons.dart';
 import 'package:strength_app/domain/entities/exercise.dart';
 import 'package:strength_app/domain/entities/workout.dart';
@@ -155,19 +156,53 @@ class _ExerciseListItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: const Color(0xFFF5A623).withValues(alpha: 0.2),
-          child: Icon(
-            iconForExercise(exercise),
-            color: const Color(0xFFF5A623),
-            size: 20,
-          ),
-        ),
+        leading: _ExerciseAnimationPreview(exercise: exercise),
         title: Text(exercise.name),
         subtitle: Text(
           '${exercise.durationSeconds}秒 · ${exercise.targetMuscles.join(', ')}',
         ),
         trailing: Icon(Icons.circle, size: 12, color: difficultyColor),
+      ),
+    );
+  }
+}
+
+class _ExerciseAnimationPreview extends StatelessWidget {
+  final Exercise exercise;
+
+  const _ExerciseAnimationPreview({required this.exercise});
+
+  @override
+  Widget build(BuildContext context) {
+    final animationPath = animationForExercise(exercise.id);
+    
+    if (animationPath != null) {
+      return SizedBox(
+        width: 40,
+        height: 40,
+        child: Image.asset(
+          animationPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return CircleAvatar(
+              backgroundColor: const Color(0xFFF5A623).withValues(alpha: 0.2),
+              child: Icon(
+                iconForExercise(exercise),
+                color: const Color(0xFFF5A623),
+                size: 20,
+              ),
+            );
+          },
+        ),
+      );
+    }
+    
+    return CircleAvatar(
+      backgroundColor: const Color(0xFFF5A623).withValues(alpha: 0.2),
+      child: Icon(
+        iconForExercise(exercise),
+        color: const Color(0xFFF5A623),
+        size: 20,
       ),
     );
   }

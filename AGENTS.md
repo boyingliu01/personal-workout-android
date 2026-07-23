@@ -7,6 +7,15 @@
 ## OVERVIEW
 Flutter Android 跑者力量训练APP (strength_app). DDD分层架构: domain/entities → core/services → data/storage → presentation/screens+providers. State management via Riverpod StateNotifier, persistent storage via Hive. 29 Dart files, ~2500 lines.
 
+## TRAINING SCENARIO CONSTRAINTS
+**使用场景**: 家庭训练，无健身房器械
+- **允许的动作类型**: 徒手训练（bodyweight）+ 哑铃（dumbbell）
+- **禁止的动作类型**: 需要健身房专用器械（如腿举机、史密斯机、引体向上杆等）
+- **可用器械**: 仅哑铃
+- **可用家具**: 沙发/椅子（用于辅助动作如保加利亚分腿蹲）
+
+添加新动作时必须遵守此约束，确保所有动作都能在家完成。
+
 ## STRUCTURE
 ```
 sport-apk/

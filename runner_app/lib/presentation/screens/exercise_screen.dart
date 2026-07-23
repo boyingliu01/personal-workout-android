@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/core/constants/exercise_animations.dart';
 import 'package:strength_app/core/constants/exercise_icons.dart';
 import 'package:strength_app/core/services/audio_service.dart';
 import 'package:strength_app/core/services/timer_service.dart';
@@ -185,11 +186,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
-                  Icon(
-                    iconForExercise(exercise),
-                    size: 48,
-                    color: const Color(0xFFF5A623),
-                  ),
+                  _ExerciseAnimation(exercise: exercise),
                   const SizedBox(height: 8),
                   Text(
                     exercise.name,
@@ -400,6 +397,41 @@ class ExerciseControls extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ExerciseAnimation extends StatelessWidget {
+  final Exercise exercise;
+
+  const _ExerciseAnimation({required this.exercise});
+
+  @override
+  Widget build(BuildContext context) {
+    final animationPath = animationForExercise(exercise.id);
+    
+    if (animationPath != null) {
+      return SizedBox(
+        width: 120,
+        height: 120,
+        child: Image.asset(
+          animationPath,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(
+              iconForExercise(exercise),
+              size: 48,
+              color: const Color(0xFFF5A623),
+            );
+          },
+        ),
+      );
+    }
+    
+    return Icon(
+      iconForExercise(exercise),
+      size: 48,
+      color: const Color(0xFFF5A623),
     );
   }
 }
