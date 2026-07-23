@@ -57,6 +57,9 @@ class TrainingStorage {
             },
           )
           .toList(),
+      'status': session.status.name,
+      'currentExerciseIndex': session.currentExerciseIndex,
+      'remainingSeconds': session.remainingSeconds,
     });
   }
 
@@ -83,6 +86,52 @@ class TrainingStorage {
             ),
           )
           .toList(),
+      status: map['status'] != null
+          ? SessionStatus.values.firstWhere(
+              (s) => s.name == map['status'],
+              orElse: () => SessionStatus.completed,
+            )
+          : SessionStatus.completed,
+      currentExerciseIndex: map['currentExerciseIndex'] as int?,
+      remainingSeconds: map['remainingSeconds'] as int?,
     );
+  }
+
+  /// Save an interrupted/paused session for later recovery.
+  Future<void> saveInterruptedSession(TrainingSession session) async {
+    final interruptedSession = session.copyWith(
+      status: session.status == SessionStatus.completed
+          ? SessionStatus.interrupted
+          : session.status,
+    );
+    await box.put('interrupted_${interruptedSession.id}', _encodeSession(interruptedSession));
+  }
+
+  /// Get the most recent interrupted session, if any.
+  TrainingSession? getInterruptedSession() {
+    for (var i = 0; i < box.length; i++) {
+      final key = box.keyAt(i);
+      if (key.toString().startsWith('interrupted_')) {
+        final jsonStr = box.get(key);
+        if (jsonStr != null) {
+          return _decodeSession(jsonStr);
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Clear the interrupted session after recovery or discard.
+  Future<void> clearInterruptedSession() async {
+    final keysToRemove = <String>[];
+    for (var i = 0; i < box.length; i++) {
+      final key = box.keyAt(i);
+      if (key.toString().startsWith('interrupted_')) {
+        keysToRemove.add(key.toString());
+      }
+    }
+    for (final key in keysToRemove) {
+      await box.delete(key);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:strength_app/data/repositories/training_storage.dart';
 import 'package:strength_app/domain/entities/exercise.dart';
 import 'package:strength_app/domain/entities/training_session.dart';
 import 'package:strength_app/domain/entities/workout.dart';
@@ -11,6 +12,8 @@ class TrainingState {
   final int currentExerciseIndex;
   final bool isPaused;
   final TrainingSession? completedSession;
+  final TrainingSession? interruptedSession;
+  final DateTime? sessionStartTime;
 
   const TrainingState({
     this.screen = WorkoutScreen.home,
@@ -18,6 +21,8 @@ class TrainingState {
     this.currentExerciseIndex = 0,
     this.isPaused = false,
     this.completedSession,
+    this.interruptedSession,
+    this.sessionStartTime,
   });
 
   Exercise? get currentExercise => currentWorkout != null &&
@@ -43,6 +48,8 @@ class TrainingState {
     int? currentExerciseIndex,
     bool? isPaused,
     TrainingSession? completedSession,
+    TrainingSession? interruptedSession,
+    DateTime? sessionStartTime,
   }) {
     return TrainingState(
       screen: screen ?? this.screen,
@@ -50,12 +57,17 @@ class TrainingState {
       currentExerciseIndex: currentExerciseIndex ?? this.currentExerciseIndex,
       isPaused: isPaused ?? this.isPaused,
       completedSession: completedSession ?? this.completedSession,
+      interruptedSession: interruptedSession ?? this.interruptedSession,
+      sessionStartTime: sessionStartTime ?? this.sessionStartTime,
     );
   }
 }
 
 class TrainingSessionNotifier extends StateNotifier<TrainingState> {
-  TrainingSessionNotifier() : super(const TrainingState());
+  final TrainingStorage? _storage;
+  DateTime? _sessionStartTime;
+
+  TrainingSessionNotifier({TrainingStorage? storage}) : _storage = storage, super(const TrainingState());
 
   void selectWorkout(Workout workout) {
     state = state.copyWith(
@@ -66,15 +78,74 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
   }
 
   void startWorkout() {
+    _sessionStartTime = DateTime.now();
     state = state.copyWith(
       screen: WorkoutScreen.exercising,
       currentExerciseIndex: 0,
       isPaused: false,
+      sessionStartTime: _sessionStartTime,
     );
   }
 
   void goHome() {
+    _sessionStartTime = null;
     state = const TrainingState();
+  }
+
+  /// Save current session as interrupted before exiting.
+  Future<void> saveInterruptedSession() async {
+    final workout = state.currentWorkout;
+    if (workout == null || _storage == null) return;
+
+    final session = TrainingSession(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      workoutId: workout.id,
+      workoutName: workout.name,
+      startTime: _sessionStartTime ?? DateTime.now(),
+      completedExercises: state.currentExerciseIndex,
+      totalExercises: workout.exercises.length,
+      totalSeconds: 0,
+      exerciseLogs: [],
+      status: SessionStatus.paused,
+      currentExerciseIndex: state.currentExerciseIndex,
+    );
+
+    await _storage!.saveInterruptedSession(session);
+    state = state.copyWith(interruptedSession: session);
+  }
+
+  /// Check for interrupted session and load it.
+  void checkForInterruptedSession() {
+    if (_storage == null) return;
+    final interrupted = _storage!.getInterruptedSession();
+    if (interrupted != null && interrupted.isResumable) {
+      state = state.copyWith(interruptedSession: interrupted);
+    }
+  }
+
+  /// Resume from an interrupted session.
+  void resumeInterruptedSession() {
+    final interrupted = state.interruptedSession;
+    if (interrupted == null) return;
+
+    // Find the workout from ExerciseData
+    // For now, we'll just restore the state
+    state = state.copyWith(
+      screen: WorkoutScreen.exercising,
+      currentExerciseIndex: interrupted.currentExerciseIndex ?? 0,
+      isPaused: false,
+      sessionStartTime: interrupted.startTime,
+      interruptedSession: null,
+    );
+
+    // Clear the interrupted session from storage
+    _storage?.clearInterruptedSession();
+  }
+
+  /// Discard the interrupted session.
+  void discardInterruptedSession() {
+    _storage?.clearInterruptedSession();
+    state = state.copyWith(interruptedSession: null);
   }
 
   void pauseExercise() {
@@ -109,7 +180,8 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       workoutId: workout.id,
       workoutName: workout.name,
-      startTime: DateTime.now(),
+      startTime: _sessionStartTime ?? DateTime.now(),
+      endTime: DateTime.now(),
       completedExercises: workout.exercises.length,
       totalExercises: workout.exercises.length,
       totalSeconds: workout.totalDurationSeconds,
@@ -123,12 +195,14 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
             ),
           )
           .toList(),
+      status: SessionStatus.completed,
     );
 
     state = state.copyWith(
       screen: WorkoutScreen.complete,
       completedSession: session,
     );
+    _sessionStartTime = null;
   }
 }
 

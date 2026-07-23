@@ -139,6 +139,33 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     }
   }
 
+  void _showExitConfirmation() {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('退出训练？'),
+        content: const Text('当前进度将保存，下次可以继续训练。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('继续训练'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _timer.stop();
+              // Save interrupted session
+              ref.read(trainingSessionProvider.notifier).saveInterruptedSession();
+              ref.read(trainingSessionProvider.notifier).goHome();
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            child: const Text('保存并退出'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sessionState = ref.watch(trainingSessionProvider);
@@ -157,11 +184,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
         title: Text(workout.name),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () {
-            _timer.stop();
-            ref.read(trainingSessionProvider.notifier).goHome();
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          },
+          onPressed: _showExitConfirmation,
         ),
       ),
       body: Column(

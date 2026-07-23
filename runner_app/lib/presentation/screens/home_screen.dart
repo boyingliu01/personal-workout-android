@@ -1,16 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:strength_app/core/constants/exercise_data.dart';
+import 'package:strength_app/data/repositories/training_storage.dart';
+import 'package:strength_app/domain/entities/training_session.dart';
 import 'package:strength_app/presentation/providers/training_session_provider.dart';
 import 'package:strength_app/presentation/screens/history_screen.dart';
 import 'package:strength_app/presentation/screens/settings_screen.dart';
 import 'package:strength_app/presentation/screens/workout_detail_screen.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Check for interrupted session after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkForInterruptedSession();
+    });
+  }
+
+  void _checkForInterruptedSession() {
+    try {
+      final storage = TrainingStorage(box: Hive.box<String>('sessions'));
+      final interrupted = storage.getInterruptedSession();
+      if (interrupted != null && interrupted.isResumable) {
+        _showRecoveryDialog(interrupted);
+      }
+    } catch (e) {
+      // Hive not initialized or box not found - skip recovery check
+      // This can happen in tests or if Hive init failed
+    }
+  }
+
+  void _showRecoveryDialog(TrainingSession session) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('继续上次训练？'),
+        content: Text('您有未完成的「${session.workoutName}」训练，是否继续？'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              // Discard the interrupted session
+              final storage = TrainingStorage(box: Hive.box<String>('sessions'));
+              storage.clearInterruptedSession();
+            },
+            child: const Text('放弃'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              // TODO: Implement resume logic - need to find the workout and restore state
+              // For now, just navigate to the workout detail
+              final storage = TrainingStorage(box: Hive.box<String>('sessions'));
+              storage.clearInterruptedSession();
+            },
+            child: const Text('继续'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final workouts = ExerciseData.allWorkouts;
 
     return Scaffold(
