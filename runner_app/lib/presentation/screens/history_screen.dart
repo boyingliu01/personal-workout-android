@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:strength_app/domain/entities/training_session.dart';
 import 'package:strength_app/presentation/providers/history_provider.dart';
+import 'package:strength_app/presentation/widgets/stats_chart.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -56,18 +57,67 @@ class HistoryScreen extends ConsumerWidget {
       );
     }
 
+    final weeklyStats = computeWeeklyStats(state.sessions);
+    final weeklyMinutes = computeWeeklyTotalMinutes(state.sessions);
+    final weeklyCount = computeWeeklyTotalCount(state.sessions);
+
     return RefreshIndicator(
       onRefresh: () => ref.read(historyProvider.notifier).refresh(),
-      child: ListView.builder(
+      child: ListView(
         padding: const EdgeInsets.all(16),
-        itemCount: state.sessions.length,
-        itemBuilder: (context, index) {
-          final session = state.sessions[index];
-          return _SessionCard(
-            session: session,
-            onDelete: () => _confirmDelete(context, ref, session),
-          );
-        },
+        children: [
+          // Weekly summary card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '本周训练',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _SummaryItem(
+                        icon: Icons.fitness_center,
+                        value: '$weeklyCount',
+                        label: '次训练',
+                      ),
+                      const SizedBox(width: 24),
+                      _SummaryItem(
+                        icon: Icons.timer,
+                        value: '$weeklyMinutes',
+                        label: '分钟',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  WeeklyBarChart(stats: weeklyStats),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            '训练记录',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          ...state.sessions.map(
+            (session) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _SessionCard(
+                session: session,
+                onDelete: () => _confirmDelete(context, ref, session),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -184,6 +234,44 @@ class _SessionCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SummaryItem extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+
+  const _SummaryItem({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, color: const Color(0xFFF5A623), size: 24),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
