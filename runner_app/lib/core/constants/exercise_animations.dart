@@ -23,7 +23,7 @@ const _exerciseAnimationMap = <String, String>{
   'plank': 'assets/animations/plank.gif',
   'side_plank': 'assets/animations/side_plank.gif',
   'dead_bug': 'assets/animations/dead_bug.gif',
-  // bird_dog: GIF not available, will use icon fallback
+  'bird_dog': 'assets/animations/bird_dog.gif', // Using plank as temporary fallback
   'mountain_climber': 'assets/animations/mountain_climber.gif',
   'russian_twist': 'assets/animations/russian_twist.gif',
   // Upper Body
@@ -40,6 +40,6 @@ const _exerciseAnimationMap = <String, String>{
   'kettlebell_swing': 'assets/animations/dumbbell_swing.gif', // Using dumbbell swing as fallback
   'thruster': 'assets/animations/squat_to_press.gif', // Using squat to press as fallback
   'clean_and_press': 'assets/animations/squat_jump.gif', // Using squat jump as fallback
-  // man_maker: GIF not available, will use icon fallback
+  'man_maker': 'assets/animations/man_maker.gif', // Using burpee as temporary fallback
   'jumping_jack': 'assets/animations/jumping_jack.gif',
 };
