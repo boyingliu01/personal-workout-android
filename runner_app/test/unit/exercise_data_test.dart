@@ -23,13 +23,14 @@ void main() {
       }
     });
 
-    test('allWorkouts contains all 5 workouts', () {
-      expect(ExerciseData.allWorkouts.length, 5);
+    test('allWorkouts contains all 6 workouts', () {
+      expect(ExerciseData.allWorkouts.length, 6);
       expect(ExerciseData.allWorkouts[0].id, 'warmup');
       expect(ExerciseData.allWorkouts[1].id, 'legs');
       expect(ExerciseData.allWorkouts[2].id, 'core');
       expect(ExerciseData.allWorkouts[3].id, 'upper_body');
       expect(ExerciseData.allWorkouts[4].id, 'full_body');
+      expect(ExerciseData.allWorkouts[5].id, 'stretch');
     });
 
     test('each exercise is category legs', () {
@@ -135,6 +136,31 @@ void main() {
     test('each warmup exercise is category warmup', () {
       for (final exercise in ExerciseData.warmupWorkout.exercises) {
         expect(exercise.category, ExerciseCategory.warmup);
+      }
+    });
+
+    test('stretchWorkout has 17 exercises', () {
+      expect(ExerciseData.stretchWorkout.exercises.length, 17);
+    });
+
+    test('stretchWorkout id and name', () {
+      expect(ExerciseData.stretchWorkout.id, 'stretch');
+      expect(ExerciseData.stretchWorkout.name, '跑后拉伸');
+    });
+
+    test('stretch exercises have non-empty fields', () {
+      for (final exercise in ExerciseData.stretchWorkout.exercises) {
+        expect(exercise.id.isNotEmpty, isTrue);
+        expect(exercise.name.isNotEmpty, isTrue);
+        expect(exercise.description.isNotEmpty, isTrue);
+        expect(exercise.durationSeconds, greaterThan(0));
+        expect(exercise.targetMuscles.isNotEmpty, isTrue);
+      }
+    });
+
+    test('each stretch exercise is category stretch', () {
+      for (final exercise in ExerciseData.stretchWorkout.exercises) {
+        expect(exercise.category, ExerciseCategory.stretch);
       }
     });
   });
