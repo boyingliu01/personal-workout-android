@@ -55,6 +55,23 @@ class _CompleteContent extends StatelessWidget {
 
   const _CompleteContent({required this.session, required this.onGoHome});
 
+  /// Estimate calories burned based on training duration and type.
+  /// Strength training: ~5-7 calories per minute.
+  int _estimateCalories(TrainingSession session) {
+    final minutes = session.totalSeconds / 60;
+    // Different workout types have different intensity
+    final caloriesPerMinute = switch (session.workoutId) {
+      'warmup' => 4.0,
+      'stretch' => 3.0,
+      'legs' => 7.0,
+      'core' => 6.0,
+      'upper_body' => 5.5,
+      'full_body' => 8.0,
+      _ => 6.0,
+    };
+    return (minutes * caloriesPerMinute).round();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -75,6 +92,11 @@ class _CompleteContent extends StatelessWidget {
             _StatCard(
               label: '总时长',
               value: '${(session.totalSeconds / 60).round()}分钟',
+            ),
+            const SizedBox(height: 12),
+            _StatCard(
+              label: '消耗卡路里',
+              value: '${_estimateCalories(session)}千卡',
             ),
             const SizedBox(height: 32),
             FilledButton.icon(
