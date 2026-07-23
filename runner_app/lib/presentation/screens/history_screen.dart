@@ -5,15 +5,65 @@ import 'package:strength_app/domain/entities/training_session.dart';
 import 'package:strength_app/presentation/providers/history_provider.dart';
 import 'package:strength_app/presentation/widgets/stats_chart.dart';
 
-class HistoryScreen extends ConsumerWidget {
+class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HistoryScreen> createState() => _HistoryScreenState();
+}
+
+class _HistoryScreenState extends ConsumerState<HistoryScreen> {
+  String? _filterWorkout;
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(historyProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('训练历史')),
+      appBar: AppBar(
+        title: const Text('训练历史'),
+        actions: [
+          PopupMenuButton<String?>(
+            icon: const Icon(Icons.filter_list),
+            onSelected: (value) {
+              setState(() {
+                _filterWorkout = value;
+              });
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem<String?>(
+                value: null,
+                child: Text('全部'),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String?>(
+                value: '跑前热身',
+                child: Text('跑前热身'),
+              ),
+              const PopupMenuItem<String?>(
+                value: '臀腿训练',
+                child: Text('臀腿训练'),
+              ),
+              const PopupMenuItem<String?>(
+                value: '核心训练',
+                child: Text('核心训练'),
+              ),
+              const PopupMenuItem<String?>(
+                value: '上肢训练',
+                child: Text('上肢训练'),
+              ),
+              const PopupMenuItem<String?>(
+                value: '全身训练',
+                child: Text('全身训练'),
+              ),
+              const PopupMenuItem<String?>(
+                value: '跑后拉伸',
+                child: Text('跑后拉伸'),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: _buildBody(context, ref, state),
     );
   }
@@ -56,6 +106,11 @@ class HistoryScreen extends ConsumerWidget {
         ),
       );
     }
+
+    // Apply filter
+    final filteredSessions = _filterWorkout == null
+        ? state.sessions
+        : state.sessions.where((s) => s.workoutName == _filterWorkout).toList();
 
     final weeklyStats = computeWeeklyStats(state.sessions);
     final weeklyMinutes = computeWeeklyTotalMinutes(state.sessions);
@@ -108,7 +163,7 @@ class HistoryScreen extends ConsumerWidget {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
-          ...state.sessions.map(
+          ...filteredSessions.map(
             (session) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: _SessionCard(

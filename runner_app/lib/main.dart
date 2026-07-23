@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:strength_app/presentation/providers/settings_provider.dart';
 import 'package:strength_app/presentation/screens/home_screen.dart';
 
 void main() {
@@ -36,20 +37,31 @@ void main() {
   );
 }
 
-class StrengthApp extends StatelessWidget {
+class StrengthApp extends ConsumerWidget {
   const StrengthApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider);
+
     return MaterialApp(
       title: '力量训练',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFF5A623),
+          brightness: Brightness.light,
         ),
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF8F9FA),
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFF5A623),
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
       home: const HomeScreen(),
     );
   }

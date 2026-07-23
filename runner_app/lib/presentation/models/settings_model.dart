@@ -5,6 +5,7 @@ class AppSettings {
   final int exerciseDuration;
   final int restDuration;
   final bool keepScreenOn;
+  final bool darkMode;
 
   const AppSettings({
     required this.volume,
@@ -13,6 +14,7 @@ class AppSettings {
     required this.exerciseDuration,
     required this.restDuration,
     required this.keepScreenOn,
+    this.darkMode = false,
   });
 
   AppSettings copyWith({
@@ -22,6 +24,7 @@ class AppSettings {
     int? exerciseDuration,
     int? restDuration,
     bool? keepScreenOn,
+    bool? darkMode,
   }) {
     return AppSettings(
       volume: volume ?? this.volume,
@@ -30,6 +33,7 @@ class AppSettings {
       exerciseDuration: exerciseDuration ?? this.exerciseDuration,
       restDuration: restDuration ?? this.restDuration,
       keepScreenOn: keepScreenOn ?? this.keepScreenOn,
+      darkMode: darkMode ?? this.darkMode,
     );
   }
 }

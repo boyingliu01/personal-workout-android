@@ -166,6 +166,34 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     );
   }
 
+  void _toggleMute() {
+    final service = ref.read(audioServiceProvider);
+    service.toggleMute();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(service.isMuted ? '已静音' : '已取消静音'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void _onSwipeLeft() {
+    // Swipe left = next exercise (skip)
+    if (!ref.read(trainingSessionProvider).isLastExercise) {
+      _skipExercise();
+    }
+  }
+
+  void _onSwipeRight() {
+    // Swipe right = previous exercise (not supported, show hint)
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('不支持返回上一个动作'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final sessionState = ref.watch(trainingSessionProvider);
@@ -187,63 +215,74 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
           onPressed: _showExitConfirmation,
         ),
       ),
-      body: Column(
-        children: [
-          ProgressDots(
-            currentIndex: sessionState.currentExerciseIndex,
-            total: workout.exercises.length,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  CountdownTimer(
-                    remainingSeconds: remainingSeconds,
-                    progress: progress.clamp(0.0, 1.0),
-                    isPaused: sessionState.isPaused,
-                  ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    '当前动作',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 8),
-                  _ExerciseAnimation(exercise: exercise),
-                  const SizedBox(height: 8),
-                  Text(
-                    exercise.name,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+      body: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          final velocity = details.primaryVelocity ?? 0;
+          if (velocity < -300) {
+            _onSwipeLeft(); // Swipe left = next
+          } else if (velocity > 300) {
+            _onSwipeRight(); // Swipe right = previous (not supported)
+          }
+        },
+        onDoubleTap: _toggleMute,
+        child: Column(
+          children: [
+            ProgressDots(
+              currentIndex: sessionState.currentExerciseIndex,
+              total: workout.exercises.length,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    CountdownTimer(
+                      remainingSeconds: remainingSeconds,
+                      progress: progress.clamp(0.0, 1.0),
+                      isPaused: sessionState.isPaused,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    exercise.targetMuscles.join(' · '),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
+                    const SizedBox(height: 32),
+                    const Text(
+                      '当前动作',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    exercise.description,
-                    style: const TextStyle(fontSize: 16, height: 1.5),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    _ExerciseAnimation(exercise: exercise),
+                    const SizedBox(height: 8),
+                    Text(
+                      exercise.name,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      exercise.targetMuscles.join(' · '),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      exercise.description,
+                      style: const TextStyle(fontSize: 16, height: 1.5),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          ExerciseControls(
-            isPaused: sessionState.isPaused,
-            onTogglePause: _togglePause,
-            onSkip: _skipExercise,
-            showSkip: !sessionState.isLastExercise,
-          ),
-        ],
+            ExerciseControls(
+              isPaused: sessionState.isPaused,
+              onTogglePause: _togglePause,
+              onSkip: _skipExercise,
+              showSkip: !sessionState.isLastExercise,
+            ),
+          ],
+        ),
       ),
     );
   }

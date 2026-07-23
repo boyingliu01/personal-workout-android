@@ -50,6 +50,14 @@ class SettingsScreen extends ConsumerWidget {
                   ref.read(settingsProvider.notifier).setKeepScreenOn(v),
             ),
           ),
+          const _SectionHeader('显示设置'),
+          SwitchListTile(
+            title: const Text('深色模式'),
+            subtitle: const Text('使用深色主题'),
+            value: settings.darkMode,
+            onChanged: (v) =>
+                ref.read(settingsProvider.notifier).setDarkMode(v),
+          ),
         ],
       ),
     );

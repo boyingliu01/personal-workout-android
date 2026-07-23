@@ -15,6 +15,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
                 box.get('exerciseDuration', defaultValue: 60) as int,
             restDuration: box.get('restDuration', defaultValue: 5) as int,
             keepScreenOn: box.get('keepScreenOn', defaultValue: true) as bool,
+            darkMode: box.get('darkMode', defaultValue: false) as bool,
           ),
         );
 
@@ -36,6 +37,11 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   Future<void> setKeepScreenOn(bool v) async {
     await box.put('keepScreenOn', v);
     state = state.copyWith(keepScreenOn: v);
+  }
+
+  Future<void> setDarkMode(bool v) async {
+    await box.put('darkMode', v);
+    state = state.copyWith(darkMode: v);
   }
 }
 
