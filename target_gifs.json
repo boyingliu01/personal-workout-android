@@ -1,0 +1,142 @@
+{
+  "high_knees": {
+    "name": "jumping_jack",
+    "url": null,
+    "source": "fallback"
+  },
+  "butt_kicks": {
+    "name": "jumping_jack",
+    "url": null,
+    "source": "fallback"
+  },
+  "grapevine": {
+    "name": "side_lunge",
+    "url": null,
+    "source": "fallback"
+  },
+  "lunge_with_twist": {
+    "name": "lunge with twist",
+    "url": "videos/1688-K9VL0Jq.gif",
+    "source": "exact"
+  },
+  "front_leg_swings": {
+    "name": "lunge",
+    "url": null,
+    "source": "fallback"
+  },
+  "side_leg_swings": {
+    "name": "side_lunge",
+    "url": null,
+    "source": "fallback"
+  },
+  "hip_circles": {
+    "name": "glute_bridge",
+    "url": null,
+    "source": "fallback"
+  },
+  "worlds_greatest_stretch": {
+    "name": "world greatest stretch",
+    "url": "videos/1604-DFGXwZr.gif",
+    "source": "exact"
+  },
+  "calf_walks": {
+    "name": "bodyweight standing calf raise",
+    "url": "videos/1373-bJYHBIN.gif",
+    "source": "exact"
+  },
+  "arm_circles": {
+    "name": "front_raise",
+    "url": null,
+    "source": "fallback"
+  },
+  "torso_twists": {
+    "name": "weighted seated twist (on stability ball)",
+    "url": "videos/0849-s34Y4LR.gif",
+    "source": "exact"
+  },
+  "standing_quad_stretch": {
+    "name": "lunge",
+    "url": null,
+    "source": "fallback"
+  },
+  "standing_hamstring_stretch": {
+    "name": "hamstring stretch",
+    "url": "videos/1511-99rWm7w.gif",
+    "source": "exact"
+  },
+  "standing_calf_stretch": {
+    "name": "calf stretch with hands against wall",
+    "url": "videos/1377-m0tCHqc.gif",
+    "source": "exact"
+  },
+  "kneeling_hip_flexor_stretch": {
+    "name": "lunge",
+    "url": null,
+    "source": "fallback"
+  },
+  "pigeon_pose": {
+    "name": "pigeon_pose",
+    "url": null,
+    "source": "fallback"
+  },
+  "butterfly_stretch": {
+    "name": "butterfly yoga pose",
+    "url": "videos/1494-bWlZvXh.gif",
+    "source": "exact"
+  },
+  "supine_figure_four": {
+    "name": "supine_figure_four",
+    "url": null,
+    "source": "fallback"
+  },
+  "wide_legged_forward_fold": {
+    "name": "lunge",
+    "url": null,
+    "source": "fallback"
+  },
+  "cat_cow": {
+    "name": "plank",
+    "url": null,
+    "source": "fallback"
+  },
+  "supine_spinal_twist": {
+    "name": "bent knee lying twist (male)",
+    "url": "videos/3639-6sYyrRX.gif",
+    "source": "exact"
+  },
+  "cobra_stretch": {
+    "name": "plank",
+    "url": null,
+    "source": "fallback"
+  },
+  "childs_pose": {
+    "name": "childs_pose",
+    "url": null,
+    "source": "fallback"
+  },
+  "neck_side_stretch": {
+    "name": "neck side stretch",
+    "url": "videos/1403-x2chWLO.gif",
+    "source": "exact"
+  },
+  "upper_trapezius_stretch": {
+    "name": "lateral_raise",
+    "url": null,
+    "source": "fallback"
+  },
+  "doorway_pec_stretch": {
+    "name": "back pec stretch",
+    "url": "videos/1405-chfnQnM.gif",
+    "source": "exact"
+  },
+  "cross_body_shoulder_stretch": {
+    "name": "chest and front of shoulder stretch",
+    "url": "videos/1271-Uto7l43.gif",
+    "source": "exact"
+  },
+  "overhead_triceps_stretch": {
+    "name": "barbell seated overhead triceps extension",
+    "url": "videos/0092-5uFK1xr.gif",
+    "source": "exact"
+  }
+}

@@ -47,30 +47,30 @@ const _exerciseAnimationMap = <String, String>{
   'high_knees': 'assets/animations/squat_jump.gif', // Using squat jump as fallback
   'butt_kicks': 'assets/animations/lunge.gif', // Using lunge as fallback
   'grapevine': 'assets/animations/side_lunge.gif', // Using side lunge as fallback
-  'lunge_with_twist': 'assets/animations/lunge.gif', // Using lunge as fallback
+  'lunge_with_twist': 'assets/animations/lunge_with_twist.gif',
   'front_leg_swings': 'assets/animations/single_leg_deadlift.gif', // Using single leg deadlift as fallback
   'side_leg_swings': 'assets/animations/side_lunge.gif', // Using side lunge as fallback
   'hip_circles': 'assets/animations/squat.gif', // Using squat as fallback
-  'worlds_greatest_stretch': 'assets/animations/lunge.gif', // Using lunge as fallback
-  'calf_walks': 'assets/animations/calf_raise.gif', // Using calf raise as fallback
-  'arm_circles': 'assets/animations/lateral_raise.gif', // Using lateral raise as fallback
+  'worlds_greatest_stretch': 'assets/animations/worlds_greatest_stretch.gif',
+  'calf_walks': 'assets/animations/bodyweight_calf_raise.gif',
+  'arm_circles': 'assets/animations/shoulder_circles.gif',
   'torso_twists': 'assets/animations/russian_twist.gif', // Using russian twist as fallback
   // Stretch
-  'standing_quad_stretch': 'assets/animations/lunge.gif', // Using lunge as fallback
-  'standing_hamstring_stretch': 'assets/animations/single_leg_deadlift.gif', // Using single leg deadlift as fallback
-  'standing_calf_stretch': 'assets/animations/calf_raise.gif', // Using calf raise as fallback
-  'kneeling_hip_flexor_stretch': 'assets/animations/lunge.gif', // Using lunge as fallback
-  'pigeon_pose': 'assets/animations/glute_bridge.gif', // Using glute bridge as fallback
-  'butterfly_stretch': 'assets/animations/glute_bridge.gif', // Using glute bridge as fallback
-  'supine_figure_four': 'assets/animations/glute_bridge.gif', // Using glute bridge as fallback
-  'wide_legged_forward_fold': 'assets/animations/single_leg_deadlift.gif', // Using single leg deadlift as fallback
-  'cat_cow': 'assets/animations/bird_dog.gif', // Using bird dog as fallback
-  'supine_spinal_twist': 'assets/animations/bird_dog.gif', // Using bird dog as fallback
-  'cobra_stretch': 'assets/animations/plank.gif', // Using plank as fallback
-  'childs_pose': 'assets/animations/plank.gif', // Using plank as fallback
-  'neck_side_stretch': 'assets/animations/lateral_raise.gif', // Using lateral raise as fallback
-  'upper_trapezius_stretch': 'assets/animations/lateral_raise.gif', // Using lateral raise as fallback
-  'doorway_pec_stretch': 'assets/animations/push_up.gif', // Using push up as fallback
-  'cross_body_shoulder_stretch': 'assets/animations/lateral_raise.gif', // Using lateral raise as fallback
-  'overhead_triceps_stretch': 'assets/animations/tricep_dip.gif', // Using tricep dip as fallback
+  'standing_quad_stretch': 'assets/animations/standing_quad_stretch.gif',
+  'standing_hamstring_stretch': 'assets/animations/hamstring_stretch.gif',
+  'standing_calf_stretch': 'assets/animations/calf_stretch.gif',
+  'kneeling_hip_flexor_stretch': 'assets/animations/kneeling_hip_flexor_stretch.gif',
+  'pigeon_pose': 'assets/animations/pigeon_pose.gif',
+  'butterfly_stretch': 'assets/animations/butterfly_pose.gif',
+  'supine_figure_four': 'assets/animations/supine_figure_four.gif',
+  'wide_legged_forward_fold': 'assets/animations/straddle_stretch.gif',
+  'cat_cow': 'assets/animations/cat_cow.gif',
+  'supine_spinal_twist': 'assets/animations/supine_spinal_twist.gif',
+  'cobra_stretch': 'assets/animations/cobra_stretch.gif',
+  'childs_pose': 'assets/animations/childs_pose.gif',
+  'neck_side_stretch': 'assets/animations/neck_side_stretch.gif',
+  'upper_trapezius_stretch': 'assets/animations/upper_trapezius_stretch.gif',
+  'doorway_pec_stretch': 'assets/animations/back_pec_stretch.gif',
+  'cross_body_shoulder_stretch': 'assets/animations/shoulder_stretch.gif',
+  'overhead_triceps_stretch': 'assets/animations/overhead_triceps_stretch.gif',
 };
