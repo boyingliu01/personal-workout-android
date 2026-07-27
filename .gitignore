@@ -33,6 +33,21 @@ coverage/
 benchmark.sh
 benchmark_models.py
 
+# Local utility scripts
+create_download_script.py
+download_exercise_gifs.py
+download_json.py
+find_target_gifs.py
+download_gifs.ps1
+
+# Large data files (animation resources)
+exercises.json
+exercise_index.json
+target_gifs.json
+
+# External repositories
+_exercises-dataset/
+
 # OS
 .DS_Store
 Thumbs.db
