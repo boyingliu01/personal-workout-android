@@ -49,3 +49,8 @@ download_gifs.ps1
 # External repositories
 _exercises-dataset/
 .archlint-cache/
+
+# Android signing
+*.jks
+*.keystore
+key.properties
