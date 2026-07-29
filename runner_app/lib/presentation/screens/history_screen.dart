@@ -32,7 +32,6 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             },
             itemBuilder: (context) => [
               const PopupMenuItem<String?>(
-                value: null,
                 child: Text('全部'),
               ),
               const PopupMenuDivider(),

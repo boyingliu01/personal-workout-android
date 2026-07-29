@@ -1,13 +1,15 @@
-# Flutter/Dart
-*.dart_tool/
+# Flutter / Dart
+.dart_tool/
 build/
 .packages
-pubspec.lock
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
 
 # IDE
 .idea/
-.vscode/settings.json
-.vscode/launch.json
+.vscode/
+*.swp
 
 # OpenCode / Omo tool state
 .omo/
@@ -16,9 +18,8 @@ opencode.json
 .sprint-state/
 .sisyphus/
 .xp-gate/
-.quality-history.jsonl
 
-# Node.js (if any)
+# Node.js
 node_modules/
 package-lock.json
 package.json
@@ -26,28 +27,25 @@ package.json
 # Test coverage
 coverage/
 
-# Windows Zone Identifiers (cross-WSL artifact)
+# OS
+.DS_Store
+Thumbs.db
 *:Zone.Identifier
 
-# Benchmark scripts (personal tooling)
-benchmark.sh
-benchmark_models.py
+# Large data files
+exercises.json
+exercise_index.json
+target_gifs.json
+gif_file_list.txt
 
-# Local utility scripts
+# Development scripts
 create_download_script.py
 download_exercise_gifs.py
 download_json.py
 find_target_gifs.py
+find_cardio_gifs.py
 download_gifs.ps1
-
-# Large data files (animation resources)
-exercises.json
-exercise_index.json
-target_gifs.json
 
 # External repositories
 _exercises-dataset/
-
-# OS
-.DS_Store
-Thumbs.db
+.archlint-cache/

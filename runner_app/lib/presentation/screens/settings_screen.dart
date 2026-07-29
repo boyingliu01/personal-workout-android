@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:strength_app/presentation/providers/settings_provider.dart';
+import 'package:strength_app/presentation/screens/animation_browser_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -57,6 +58,21 @@ class SettingsScreen extends ConsumerWidget {
             value: settings.darkMode,
             onChanged: (v) =>
                 ref.read(settingsProvider.notifier).setDarkMode(v),
+          ),
+          const _SectionHeader('开发工具'),
+          ListTile(
+            leading: const Icon(Icons.animation),
+            title: const Text('动画资源浏览器'),
+            subtitle: const Text('浏览和命名所有 GIF 动画素材'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (_) => const AnimationBrowserScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),

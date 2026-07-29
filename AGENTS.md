@@ -5,7 +5,7 @@
 **Branch:** master
 
 ## OVERVIEW
-Flutter Android 跑者力量训练APP (strength_app). DDD分层架构: domain/entities → core/services → data/storage → presentation/screens+providers. State management via Riverpod StateNotifier, persistent storage via Hive. 29 Dart files, ~2500 lines.
+Flutter Android 跑者力量训练APP (strength_app). DDD分层架构: domain/entities → core/services → data/storage → presentation/screens+providers. State management via Riverpod StateNotifier, persistent storage via Hive. 6 training modules (57 exercises), 51 GIF animations, 134 tests.
 
 ## TRAINING SCENARIO CONSTRAINTS
 **使用场景**: 家庭训练，无健身房器械
@@ -18,28 +18,30 @@ Flutter Android 跑者力量训练APP (strength_app). DDD分层架构: domain/en
 
 ## STRUCTURE
 ```
-sport-apk/
-├── runner_app/              # Active Flutter project (v2.0.0+1)
+personal-workout-android/
+├── runner_app/              # Active Flutter project (v2.2.0+1)
+│   ├── main.dart            # Entry: runZonedGuarded → Hive init → ProviderScope → StrengthApp
 │   ├── lib/
-│   │   ├── main.dart        # Entry: runZonedGuarded → Hive init → ProviderScope → StrengthApp
-│   │   ├── domain/entities/ # 3 files: Exercise, Workout, ExerciseLog, TrainingSession (pure Dart)
-  │   │   ├── core/
-│   │   │   ├── services/    # AudioService (TTS+tick), TimerService (Stream) — see core/services/AGENTS.md
-│   │   │   └── constants/   # exercise_data.dart (hardcoded catalog)
+│   │   ├── domain/entities/ # Exercise, Workout, ExerciseLog, TrainingSession (pure Dart)
+│   │   ├── core/
+│   │   │   ├── services/    # AudioService (TTS+tick), TimerService (Stream)
+│   │   │   └── constants/   # exercise_data.dart, exercise_animations.dart, exercise_icons.dart
 │   │   ├── data/
 │   │   │   ├── datasources/ # Hive datasources (JSON serialization)
 │   │   │   └── repositories/# TrainingStorage (Hive box 'sessions')
 │   │   └── presentation/
 │   │       ├── providers/   # Riverpod StateNotifiers (hand-written, no codegen)
-│   │       ├── screens/     # 7 screens, state-machine driven — see presentation/screens/AGENTS.md
-│   │       └── models/      # UI model classes
-│   ├── test/unit/           # 8 unit tests + 1 widget test
+│   │       ├── screens/     # 8 screens (home, detail, exercise, rest, complete, history, settings, animation_browser)
+│   │       ├── widgets/     # Stats chart, reusable components
+│   │       └── models/      # AppSettings UI model
+│   ├── assets/animations/   # 51 GIF animation files
+│   ├── test/                # 134 tests (unit + widget)
 │   └── android/             # Android native config
-├── runner_app_old/          # Backup/previous iteration — IGNORE for new work
-├── docs/                    # Architecture docs (architecture.yaml, review docs)
-├── .github/ISSUES/          # Tracked issues (001, 002)
-├── SETUP_GUIDE.md           # Windows desktop migration guide
-└── DESIGN.md / PLAN.md      # Original design doc + implementation plan (historic)
+├── docs/                    # Design docs, architecture, install guides
+├── scripts/                 # Development utility scripts
+├── AGENTS.md                # This file — project knowledge base
+├── architecture.yaml        # Layer boundary definitions
+└── .github/                 # GitHub Issues
 ```
 
 ## WHERE TO LOOK
@@ -87,7 +89,6 @@ sport-apk/
 
 ## ANTI-PATTERNS (THIS PROJECT)
 - **DO NOT use `wakelock`** — use `wakelock_plus` (wakelock is deprecated)
-- **DO NOT modify `runner_app_old/`** — it's a backup, work only in `runner_app/`
 - **DO NOT call `_audioService.stop()` in screen dispose** — TrainingFlowScreen swaps widgets via state, dispose fires on exercise↔rest transitions; stopping TTS kills ongoing audio
 - **DO NOT pop screens via Navigator for exercise→rest transitions** — use `notifier.nextExercise()` state change instead
 - **DO NOT suppress type errors** with `as dynamic` or equivalent
@@ -126,7 +127,6 @@ flutter clean && flutter pub get  # Clean rebuild
 ```
 
 ## NOTES
-- `runner_app_old/` is a previous iteration backup — ignore for development
 - Two Hive boxes: `'settings'` (user preferences) and `'sessions'` (training history)
 - Audio requires Android TTS engine with zh-CN language installed
 - Exercise data is hardcoded in `exercise_data.dart` — no API or remote data yet

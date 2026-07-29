@@ -49,7 +49,6 @@ class StrengthApp extends ConsumerWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFF5A623),
-          brightness: Brightness.light,
         ),
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF8F9FA),

@@ -44,8 +44,8 @@ const _exerciseAnimationMap = <String, String>{
   'jumping_jack': 'assets/animations/jumping_jack.gif',
   // Warmup
   'warmup_jumping_jack': 'assets/animations/jumping_jack.gif',
-  'high_knees': 'assets/animations/squat_jump.gif', // Using squat jump as fallback
-  'butt_kicks': 'assets/animations/lunge.gif', // Using lunge as fallback
+  'high_knees': 'assets/animations/high_knees.gif',
+  'butt_kicks': 'assets/animations/butt_kicks.gif',
   'grapevine': 'assets/animations/side_lunge.gif', // Using side lunge as fallback
   'lunge_with_twist': 'assets/animations/lunge_with_twist.gif',
   'front_leg_swings': 'assets/animations/single_leg_deadlift.gif', // Using single leg deadlift as fallback

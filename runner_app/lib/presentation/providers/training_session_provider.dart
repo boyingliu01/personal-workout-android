@@ -110,14 +110,14 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
       currentExerciseIndex: state.currentExerciseIndex,
     );
 
-    await _storage!.saveInterruptedSession(session);
+    await _storage.saveInterruptedSession(session);
     state = state.copyWith(interruptedSession: session);
   }
 
   /// Check for interrupted session and load it.
   void checkForInterruptedSession() {
     if (_storage == null) return;
-    final interrupted = _storage!.getInterruptedSession();
+    final interrupted = _storage.getInterruptedSession();
     if (interrupted != null && interrupted.isResumable) {
       state = state.copyWith(interruptedSession: interrupted);
     }
@@ -135,7 +135,6 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
       currentExerciseIndex: interrupted.currentExerciseIndex ?? 0,
       isPaused: false,
       sessionStartTime: interrupted.startTime,
-      interruptedSession: null,
     );
 
     // Clear the interrupted session from storage
@@ -145,7 +144,7 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
   /// Discard the interrupted session.
   void discardInterruptedSession() {
     _storage?.clearInterruptedSession();
-    state = state.copyWith(interruptedSession: null);
+    state = state.copyWith();
   }
 
   void pauseExercise() {
@@ -195,7 +194,6 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
             ),
           )
           .toList(),
-      status: SessionStatus.completed,
     );
 
     state = state.copyWith(

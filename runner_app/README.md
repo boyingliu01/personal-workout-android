@@ -1,16 +1,27 @@
-# strength_app
+# Runner Strength Training App
 
-A new Flutter project.
+Flutter Android 力量训练应用，专为跑步爱好者设计。
 
-## Getting Started
+## 快速开始
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+详细文档请查看项目根目录的 [README.md](../README.md)。
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 项目结构
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- `lib/domain/entities/` — 领域模型
+- `lib/core/services/` — 音频、计时器服务
+- `lib/data/` — Hive 数据存储
+- `lib/presentation/` — UI 页面和状态管理
+- `assets/animations/` — GIF 动画资源
+- `test/` — 单元测试和 Widget 测试
+
+## 测试
+
+```bash
+flutter test  # 运行 134 个测试
+```
