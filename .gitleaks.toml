@@ -1,0 +1,40 @@
+# gitleaks configuration
+# See: https://github.com/gitleaks/gitleaks
+
+[allowlist]
+  description = "Global allowlist"
+  paths = [
+    '''pubspec\.lock$''',
+    '''\.gstack/.*$''',
+  ]
+
+[[rules]]
+  id = "generic-api-key"
+  description = "Generic API Key"
+  regex = '''(?i)(api[_-]?key|apikey|api[_-]?secret)\s*[:=]\s*['"]?([a-zA-Z0-9_\-]{20,})['"]?'''
+  entropy = 3.5
+  tags = ["key", "generic"]
+
+[[rules]]
+  id = "private-key"
+  description = "Private Key"
+  regex = '''-----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----'''
+  tags = ["key", "private"]
+
+[[rules]]
+  id = "aws-access-key"
+  description = "AWS Access Key"
+  regex = '''(?<![A-Z0-9])(AKIA[0-9A-Z]{16})(?![A-Z0-9])'''
+  tags = ["key", "aws"]
+
+[[rules]]
+  id = "github-token"
+  description = "GitHub Token"
+  regex = '''ghp_[a-zA-Z0-9]{36}'''
+  tags = ["key", "github"]
+
+[[rules]]
+  id = "slack-token"
+  description = "Slack Token"
+  regex = '''xox[baprs]-[a-zA-Z0-9-]+'''
+  tags = ["key", "slack"]
