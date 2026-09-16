@@ -208,13 +208,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
     final progress = _elapsedSeconds / exercise.durationSeconds;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(workout.name),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: _showExitConfirmation,
-        ),
-      ),
+      backgroundColor: Colors.black,
       body: GestureDetector(
         onHorizontalDragEnd: (details) {
           final velocity = details.primaryVelocity ?? 0;
@@ -225,61 +219,126 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
           }
         },
         onDoubleTap: _toggleMute,
-        child: Column(
+        child: Stack(
           children: [
-            ProgressDots(
-              currentIndex: sessionState.currentExerciseIndex,
-              total: workout.exercises.length,
+            // Full-screen animation background
+            Positioned.fill(
+              child: _ExerciseAnimationFullScreen(exercise: exercise),
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    CountdownTimer(
-                      remainingSeconds: remainingSeconds,
-                      progress: progress.clamp(0.0, 1.0),
-                      isPaused: sessionState.isPaused,
+
+            // Top bar with progress dots and close button
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.7),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white),
+                          onPressed: _showExitConfirmation,
+                        ),
+                        Expanded(
+                          child: ProgressDots(
+                            currentIndex: sessionState.currentExerciseIndex,
+                            total: workout.exercises.length,
+                            lightMode: true,
+                          ),
+                        ),
+                        const SizedBox(width: 48), // Balance for close button
+                      ],
                     ),
-                    const SizedBox(height: 32),
-                    const Text(
-                      '当前动作',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 8),
-                    _ExerciseAnimation(exercise: exercise),
-                    const SizedBox(height: 8),
-                    Text(
-                      exercise.name,
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      exercise.targetMuscles.join(' · '),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      exercise.description,
-                      style: const TextStyle(fontSize: 16, height: 1.5),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-            ExerciseControls(
-              isPaused: sessionState.isPaused,
-              onTogglePause: _togglePause,
-              onSkip: _skipExercise,
-              showSkip: !sessionState.isLastExercise,
+
+            // Floating countdown timer (top-right)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 60,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: CountdownTimerCompact(
+                  remainingSeconds: remainingSeconds,
+                  progress: progress.clamp(0.0, 1.0),
+                  isPaused: sessionState.isPaused,
+                ),
+              ),
+            ),
+
+            // Exercise info overlay (bottom)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.8),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                        child: Text(
+                          exercise.name,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          exercise.targetMuscles.join(' · '),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ExerciseControls(
+                        isPaused: sessionState.isPaused,
+                        onTogglePause: _togglePause,
+                        onSkip: _skipExercise,
+                        showSkip: !sessionState.isLastExercise,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -363,11 +422,13 @@ class CountdownTimer extends StatelessWidget {
 class ProgressDots extends StatelessWidget {
   final int currentIndex;
   final int total;
+  final bool lightMode;
 
   const ProgressDots({
     super.key,
     required this.currentIndex,
     required this.total,
+    this.lightMode = false,
   });
 
   @override
@@ -390,7 +451,9 @@ class ProgressDots extends StatelessWidget {
                   ? const Color(0xFFF5A623)
                   : isActive
                       ? const Color(0xFFF5A623)
-                      : Colors.grey.shade300,
+                      : lightMode
+                          ? Colors.white.withOpacity(0.5)
+                          : Colors.grey.shade300,
               border: isActive
                   ? Border.all(color: const Color(0xFFF5A623), width: 2)
                   : null,
@@ -494,6 +557,103 @@ class _ExerciseAnimation extends StatelessWidget {
       iconForExercise(exercise),
       size: 48,
       color: const Color(0xFFF5A623),
+    );
+  }
+}
+
+class _ExerciseAnimationFullScreen extends StatelessWidget {
+  final Exercise exercise;
+
+  const _ExerciseAnimationFullScreen({required this.exercise});
+
+  @override
+  Widget build(BuildContext context) {
+    final animationPath = animationForExercise(exercise.id);
+    
+    if (animationPath != null) {
+      return Image.asset(
+        animationPath,
+        fit: BoxFit.contain,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return Center(
+            child: Icon(
+              iconForExercise(exercise),
+              size: 120,
+              color: const Color(0xFFF5A623),
+            ),
+          );
+        },
+      );
+    }
+    
+    return Center(
+      child: Icon(
+        iconForExercise(exercise),
+        size: 120,
+        color: const Color(0xFFF5A623),
+      ),
+    );
+  }
+}
+
+class CountdownTimerCompact extends StatelessWidget {
+  final int remainingSeconds;
+  final double progress;
+  final bool isPaused;
+
+  const CountdownTimerCompact({
+    super.key,
+    required this.remainingSeconds,
+    required this.progress,
+    required this.isPaused,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final minutes = remainingSeconds ~/ 60;
+    final seconds = remainingSeconds % 60;
+    final displayTime = '$minutes:${seconds.toString().padLeft(2, '0')}';
+
+    return SizedBox(
+      width: 80,
+      height: 80,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            width: 80,
+            height: 80,
+            child: CircularProgressIndicator(
+              value: 1.0 - progress,
+              strokeWidth: 4,
+              backgroundColor: Colors.white.withOpacity(0.3),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                isPaused ? Colors.grey : const Color(0xFFF5A623),
+              ),
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                displayTime,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: isPaused ? Colors.grey : Colors.white,
+                ),
+              ),
+              if (isPaused)
+                const Text(
+                  '暂停',
+                  style: TextStyle(fontSize: 10, color: Colors.grey),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
