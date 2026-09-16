@@ -54,3 +54,6 @@ _exercises-dataset/
 *.jks
 *.keystore
 key.properties
+
+# Sprint worktrees
+.worktrees/
