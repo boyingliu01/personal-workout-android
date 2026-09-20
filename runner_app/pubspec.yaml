@@ -1,7 +1,7 @@
 name: strength_app
 description: "个人力量训练APP - 专注于跑者的力量训练"
 publish_to: 'none'
-version: 2.0.0+1
+version: 2.1.0+1
 
 environment:
   sdk: ^3.6.2
