@@ -58,10 +58,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           FilledButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              // TODO: Implement resume logic - need to find the workout and restore state
-              // For now, just navigate to the workout detail
+              // Find the workout and restore state
               final storage = TrainingStorage(box: Hive.box<String>('sessions'));
-              storage.clearInterruptedSession();
+              final interrupted = storage.getInterruptedSession();
+              
+              if (interrupted != null) {
+                // Find the workout from ExerciseData
+                final workout = ExerciseData.allWorkouts.firstWhere(
+                  (w) => w.id == interrupted.workoutId,
+                  orElse: () => ExerciseData.allWorkouts.first,
+                );
+                
+                // Load workout and resume from interrupted state
+                final notifier = ref.read(trainingSessionProvider.notifier);
+                notifier.selectWorkout(workout);
+                notifier.resumeInterruptedSession();
+                
+                // Navigate to workout detail
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const WorkoutDetailScreen(),
+                  ),
+                );
+              }
             },
             child: const Text('继续'),
           ),

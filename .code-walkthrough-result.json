@@ -1,0 +1,25 @@
+{
+  "lines_added": 30,
+  "experts": [
+    {
+      "confidence": 9,
+      "verdict": "APPROVED",
+      "id": "Expert A"
+    },
+    {
+      "confidence": 9,
+      "verdict": "APPROVED",
+      "id": "Expert B"
+    }
+  ],
+  "lines_deleted": 15,
+  "timestamp": "2026-09-18T13:15:27Z",
+  "files_reviewed": 2,
+  "verdict": "APPROVED",
+  "expires": "2026-09-18T14:15:27Z",
+  "issues": [],
+  "consensus_ratio": 1.0,
+  "commit": "51fef15e38df7a9bc4ec2ac72092f3677edbebdd",
+  "confidence": 9,
+  "branch": "master"
+}

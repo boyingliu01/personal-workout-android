@@ -128,8 +128,7 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
     final interrupted = state.interruptedSession;
     if (interrupted == null) return;
 
-    // Find the workout from ExerciseData
-    // For now, we'll just restore the state
+    // Restore the state from interrupted session
     state = state.copyWith(
       screen: WorkoutScreen.exercising,
       currentExerciseIndex: interrupted.currentExerciseIndex ?? 0,
@@ -137,8 +136,9 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
       sessionStartTime: interrupted.startTime,
     );
 
-    // Clear the interrupted session from storage
-    _storage?.clearInterruptedSession();
+    // Note: We do NOT clear the interrupted session here.
+    // It will be cleared when the workout is completed (completeWorkout).
+    // This prevents data loss if the app crashes during resumed training.
   }
 
   /// Discard the interrupted session.
@@ -201,6 +201,9 @@ class TrainingSessionNotifier extends StateNotifier<TrainingState> {
       completedSession: session,
     );
     _sessionStartTime = null;
+    
+    // Clear the interrupted session now that workout is completed
+    _storage?.clearInterruptedSession();
   }
 }
 
