@@ -97,16 +97,9 @@ class _RestScreenState extends ConsumerState<RestScreen> {
 
   void _onRestComplete() {
     _timer.stop();
-    final notifier = ref.read(trainingSessionProvider.notifier);
-    final settings = ref.read(settingsProvider);
-    if (ref.read(trainingSessionProvider).isLastExercise) {
-      if (settings.voiceEnabled) {
-        _audioService.speak('时间到！恭喜，训练完成！');
-      }
-      notifier.completeWorkout();
-    } else {
-      notifier.skipRest();
-    }
+    // Rest always proceeds to the next exercise. The last exercise's
+    // timer completion (in ExerciseScreen) triggers completeWorkout().
+    ref.read(trainingSessionProvider.notifier).skipRest();
   }
 
   void _skipRest() {

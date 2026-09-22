@@ -3,6 +3,23 @@
 **优先级**: Critical (阻塞MVP可用性)
 **Gate**: Gate 3 真机验证
 **报告日期**: 2026-05-17
+**状态**: ✅ 已修复 (2026-09-23)
+
+## 修复记录 (2026-09-23)
+
+### 根因确认
+1. **`startWorkout()` 重置 index**（嫌疑5）— 此前已通过方案A修复（移除 `ExerciseScreen.initState()` 中的 `startWorkout()` 调用）
+2. **`_onRestComplete()` 中 `isLastExercise` 误判**（嫌疑3）— 休息结束时 index 已指向下一个动作，导致最后一个动作前的休息结束后错误调用 `completeWorkout()`，**最后一个动作被跳过**
+
+### 实施的修复
+- **`rest_screen.dart`**: `_onRestComplete()` 移除 `isLastExercise` 检查，休息结束后始终调用 `skipRest()` 进入下一个动作。训练完成由 `ExerciseScreen._onTimerComplete()` 在最后一个动作计时结束时触发。
+- **`training_session_provider_test.dart`**: 添加 2 个回归测试：
+  - `full cycle preserves index across exercise→rest→exercise transitions` — 验证全周期 index 不被重置 + 最后一个动作不被跳过
+  - `skipRest never resets currentExerciseIndex` — 验证 `skipRest()` 不重置 index
+
+### 验证结果
+- `flutter test` → 136/136 全部通过
+- `flutter analyze` → 无新增问题
 
 ## 复现步骤
 1. 打开应用 → 点击"腿部力量训练"卡片

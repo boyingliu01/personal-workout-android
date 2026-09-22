@@ -176,5 +176,149 @@ void main() {
         'lunge',
       ); // nextExercise shows lunge (WRONG for RestScreen)
     });
+
+    test('full cycle preserves index across exercise→rest→exercise transitions',
+        () {
+      const ex1 = Exercise(
+        id: 'squat',
+        name: '深蹲',
+        description: '',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      );
+      const ex2 = Exercise(
+        id: 'plank',
+        name: '平板支撑',
+        description: '',
+        imagePath: '',
+        durationSeconds: 30,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.core,
+      );
+      const ex3 = Exercise(
+        id: 'lunge',
+        name: '弓步',
+        description: '',
+        imagePath: '',
+        durationSeconds: 45,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      );
+      const workout = Workout(
+        id: 'legs',
+        name: 'Leg Day',
+        description: '',
+        estimatedMinutes: 3,
+        exercises: [ex1, ex2, ex3],
+      );
+      notifier.selectWorkout(workout);
+      notifier.startWorkout();
+
+      // Start: index 0, exercising squat
+      expect(
+        container.read(trainingSessionProvider).currentExerciseIndex,
+        0,
+      );
+      expect(
+        container.read(trainingSessionProvider).screen,
+        WorkoutScreen.exercising,
+      );
+
+      // Squat timer completes → index advances, rest begins
+      notifier.nextExercise();
+      var state = container.read(trainingSessionProvider);
+      expect(state.currentExerciseIndex, 1);
+      expect(state.screen, WorkoutScreen.resting);
+
+      // Rest completes → skipRest (what RestScreen._onRestComplete does).
+      // Index must NOT reset to 0 (Issue 001 regression guard).
+      notifier.skipRest();
+      state = container.read(trainingSessionProvider);
+      expect(state.currentExerciseIndex, 1);
+      expect(state.screen, WorkoutScreen.exercising);
+
+      // Plank timer completes → rest before last exercise
+      notifier.nextExercise();
+      state = container.read(trainingSessionProvider);
+      expect(state.currentExerciseIndex, 2);
+      expect(state.screen, WorkoutScreen.resting);
+
+      // Rest completes → last exercise IS reached (not skipped)
+      notifier.skipRest();
+      state = container.read(trainingSessionProvider);
+      expect(state.currentExerciseIndex, 2);
+      expect(state.screen, WorkoutScreen.exercising);
+
+      // Last exercise timer completes → workout completes
+      notifier.nextExercise();
+      expect(
+        container.read(trainingSessionProvider).screen,
+        WorkoutScreen.complete,
+      );
+    });
+
+    test('skipRest never resets currentExerciseIndex', () {
+      const ex1 = Exercise(
+        id: 'squat',
+        name: '深蹲',
+        description: '',
+        imagePath: '',
+        durationSeconds: 60,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.legs,
+      );
+      const ex2 = Exercise(
+        id: 'plank',
+        name: '平板支撑',
+        description: '',
+        imagePath: '',
+        durationSeconds: 30,
+        restSeconds: 5,
+        targetMuscles: [],
+        difficulty: Difficulty.beginner,
+        category: ExerciseCategory.core,
+      );
+      const workout = Workout(
+        id: 'legs',
+        name: 'Leg Day',
+        description: '',
+        estimatedMinutes: 2,
+        exercises: [ex1, ex2],
+      );
+      notifier.selectWorkout(workout);
+      notifier.startWorkout();
+
+      // Exercise 1 completes → rest begins, index advanced to 1
+      notifier.nextExercise();
+      expect(
+        container.read(trainingSessionProvider).currentExerciseIndex,
+        1,
+      );
+      expect(
+        container.read(trainingSessionProvider).screen,
+        WorkoutScreen.resting,
+      );
+
+      // Rest completes → index must stay at 1, not reset to 0
+      notifier.skipRest();
+      expect(
+        container.read(trainingSessionProvider).currentExerciseIndex,
+        1,
+      );
+      expect(
+        container.read(trainingSessionProvider).screen,
+        WorkoutScreen.exercising,
+      );
+    });
   });
 }
